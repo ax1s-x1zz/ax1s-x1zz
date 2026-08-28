@@ -8,9 +8,23 @@
 
 ## Overview
 
+**Building type-safe, compiled data pipeline DSLs and high-performance ML infrastructure in Rust.**
+
 I build data pipeline languages and the tooling around them. My main line of work is a family of domain-specific languages that compile `.xzz` scripts into optimized Polars execution plans, backed by compilers written from scratch in Rust. Alongside the language itself, I work on visual editors, source-to-source transpilers, and applied research on LLM efficiency.
 
 The core design direction: move errors from runtime to compile time, keep the CLI lightweight by isolating heavy dependencies behind a subprocess boundary, and make the whole path from CSV to trained model expressible in a single script.
+
+---
+
+## Ecosystem
+
+```
+[Python Code] --> (py2xzz) ---\
+                               --> [.xzz Script] --> (Xazz Compiler) --> [Exec / Burn ML]
+[Visual Drag&Drop] (IDE) ----/
+```
+
+x1zzLang is the foundation that grew into Xazz; py2xzz and the Visual IDE feed `.xzz` scripts into the Xazz compiler.
 
 ---
 
@@ -90,3 +104,5 @@ Research quantifying the energy-saving efficiency of LLM weight quantization and
 ## About
 
 These projects are part of an ongoing exploration of type-safe, compiled data pipelines. If you're working on similar problems in compiler design, data tooling, or ML infrastructure, I'd be glad to talk.
+
+- **Email**: [ax1s@x1zz.com](mailto:ax1s@x1zz.com)
