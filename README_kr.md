@@ -16,8 +16,7 @@
 
 ## 핀 프로젝트 (Pinned Projects)
 
-### Xazz — AI 파이프라인 DSL
-> https://github.com/xazzdev/Xazz
+### [Xazz](https://github.com/x1zzdev/Xazz) — AI 파이프라인 DSL
 
 Polars 전처리, Burn 딥러닝 컴파일, 정적 보안 가드레일을 단일 `.xzz` 스크립트에 통합하는 Rust 기반 AI 파이프라인 DSL입니다.
 
@@ -29,7 +28,7 @@ Polars 전처리, Burn 딥러닝 컴파일, 정적 보안 가드레일을 단일
   - PII/시크릿 탐지 기반 Policy-as-Code 가드레일, 세션별 엡실론 예산을 갖는 차등 프라이버시, SHA-256 append-only 감사 로그
   - `xazz-runner` 서브프로세스 경계 뒤에 무거운 엔진을 격리해 CLI 바이너리를 2–5MB로 유지하는 멀티 크레이트 워크스페이스
 
-### x1zzLang — 데이터 파이프라인 언어
+### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — 데이터 파이프라인 언어
 접근 가능한 데이터 분석을 탐구하는 Rust 기반 DSL로, `.xzz` 스크립트를 최적화된 Polars LazyFrame 실행 계획으로 컴파일합니다.
 
 - **현재 스택**: Rust, Polars, clap, serde
@@ -41,7 +40,7 @@ Polars 전처리, Burn 딥러닝 컴파일, 정적 보안 가드레일을 단일
   - CLI는 Polars를 절대 링크하지 않고, 실행은 서브프로세스로 위임하는 의존성 격리
   - 이후 Xazz로 발전한 기반 프로젝트
 
-### py2xzz — Python → `.xzz` 변환기
+### [py2xzz](https://github.com/x1zzdev/py2xzz) — Python → `.xzz` 변환기
 Pandas / PyTorch로 작성된 Python 데이터·딥러닝 파이프라인을 `.xzz` DSL 스크립트로 변환하는 Rust CLI 도구입니다.
 
 - **현재 스택**: Rust, serde
@@ -52,7 +51,7 @@ Pandas / PyTorch로 작성된 Python 데이터·딥러닝 파이프라인을 `.x
   - 원본 Python 줄/열 위치를 생성된 코드로 추적하는 span map 기반 진단
   - 출력은 `xazz-core` AST와 1:1 대응하며 `xazz check` 통과
 
-### x1zzLang Visual IDE
+### [x1zzLang Visual IDE](https://github.com/x1zzdev/x1zzLang-visual-ide)
 x1zzLang용 그래픽 파이프라인 편집기로, DAG 워크플로를 설계하고 `.xzz` 코드를 생성하여 네이티브로 실행합니다.
 
 - **현재 스택**: React 18, Vite, @xyflow/react, i18next
@@ -62,7 +61,7 @@ x1zzLang용 그래픽 파이프라인 편집기로, DAG 워크플로를 설계�
   - 백엔드 대상 원클릭 실행 및 테이블 결과 표시
   - 멀티 워크플로 탭, 실행 취소/재실행, 자동 저장, 컨테이너 그룹, 한/영 UI 지원
 
-### LLM PCAG 연구 — LLM 양자화의 파워 월
+### [LLM PCAG 연구](https://github.com/ax1s-x1zz/llm-pcag-research) — LLM 양자화의 파워 월
 LLM 가중치 양자화의 에너지 절감 효율과 그리드 Jevons 역설을 계량화하는 연구입니다.
 
 - **현재 스택**: Python (NumPy, pandas, SciPy, SymPy, Matplotlib)

@@ -16,8 +16,7 @@ The core design direction: move errors from runtime to compile time, keep the CL
 
 ## Pinned Projects
 
-### Xazz — AI Pipeline DSL
-> https://github.com/xazzdev/Xazz
+### [Xazz](https://github.com/x1zzdev/Xazz) — AI Pipeline DSL
 
 An AI pipeline DSL in Rust that unifies Polars preprocessing, Burn deep-learning compilation, and static security guardrails in one `.xzz` script.
 
@@ -29,7 +28,7 @@ An AI pipeline DSL in Rust that unifies Polars preprocessing, Burn deep-learning
   - Policy-as-Code guardrails (PII/secret detection), differential privacy with a per-session epsilon budget, and a SHA-256 append-only audit log
   - Multi-crate Cargo workspace that keeps the CLI binary 2–5 MB by isolating heavy engines behind the `xazz-runner` subprocess boundary
 
-### x1zzLang — Data Pipeline Language
+### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — Data Pipeline Language
 A Rust-based DSL for exploring accessible data analysis, compiling `.xzz` scripts into optimized Polars LazyFrame execution plans.
 
 - **Tech stack**: Rust, Polars, clap, serde
@@ -41,7 +40,7 @@ A Rust-based DSL for exploring accessible data analysis, compiling `.xzz` script
   - Dependency isolation: the CLI never links Polars — execution is delegated to a spawned subprocess
   - The foundation that later grew into Xazz
 
-### py2xzz — Python → `.xzz` Transpiler
+### [py2xzz](https://github.com/x1zzdev/py2xzz) — Python → `.xzz` Transpiler
 A Rust CLI tool that converts Python data and deep-learning pipelines (Pandas / PyTorch) into `.xzz` DSL scripts.
 
 - **Tech stack**: Rust, serde
@@ -52,7 +51,7 @@ A Rust CLI tool that converts Python data and deep-learning pipelines (Pandas / 
   - A span map traces original Python line/column positions to emitted statements for diagnostic reporting
   - Output maps 1:1 to the `xazz-core` AST and passes `xazz check`
 
-### x1zzLang Visual IDE
+### [x1zzLang Visual IDE](https://github.com/x1zzdev/x1zzLang-visual-ide)
 A graphical pipeline editor for x1zzLang that designs DAG workflows and runs them natively.
 
 - **Tech stack**: React 18, Vite, @xyflow/react, i18next
@@ -62,7 +61,7 @@ A graphical pipeline editor for x1zzLang that designs DAG workflows and runs the
   - One-click execution against the backend with tabular results
   - Multi-workflow tabs, undo/redo, auto-save, container grouping, and Korean/English UI
 
-### LLM PCAG Research — The Power Wall of LLM Quantization
+### [LLM PCAG Research](https://github.com/ax1s-x1zz/llm-pcag-research) — The Power Wall of LLM Quantization
 Research quantifying the energy-saving efficiency of LLM weight quantization and the macro-grid Jevons paradox.
 
 - **Tech stack**: Python (NumPy, pandas, SciPy, SymPy, Matplotlib)
