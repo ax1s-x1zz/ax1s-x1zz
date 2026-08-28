@@ -1,6 +1,6 @@
 # ax1s-x1zz
 
-**Rust-focused systems and tooling developer working on data pipeline DSLs, compiler engineering, and AI/ML infrastructure.**
+**High school student (2nd year) in South Korea — building data pipeline DSLs, compilers, and AI/ML tooling in Rust.**
 
 [한국어 문서 (Korean)](./README_kr.md)
 

@@ -1,6 +1,6 @@
 # ax1s-x1zz
 
-**데이터 파이프라인 DSL, 컴파일러 엔지니어링, AI/ML 인프라를 중심으로 작업하는 Rust 개발자입니다.**
+**한국 고등학교 2학년 학생입니다. 데이터 파이프라인 DSL, 컴파일러, AI/ML 도구를 Rust로 개발하고 있습니다.**
 
 [English Document](./README.md)
 
