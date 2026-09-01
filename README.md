@@ -94,11 +94,11 @@ Research quantifying the energy-saving efficiency of LLM weight quantization and
 - **Team & IP Governance:** Established clear 1/N reward distribution and separated pre-existing core IP (`x1zzLang`) from new hackathon assets.
 - **Crisis Recovery:** Swiftly restructured roles upon sudden team departure to successfully meet submission deadlines.
 - **Defensive Engineering:** Formulated mitigation strategies against judge edge-cases (query correlation overhead, DP noise model loss).
-- **Architecture:** Built `x1zz Guard`—an AST-based static policy gate powered by an on-premise sLM (Qwen2.5-Coder) in Rust.
+- **Architecture:** Designed `x1zz Guard`—an AST-based static policy gate architecture powered by an on-premise sLM (Qwen2.5-Coder) in Rust.
 
 #### **GEEKs Hackathon (2026.08.04 - 2026.08.05)**
-> **Role:** Team Presenter, Strategic Pivot Lead, Product/UX Validator
-- **Strategic Pivot:** Led a rapid transition from an unfeasible B2B PaaS to a user-centric B2C platform (`Woosen-haejo`) matching team stack.
+> **Role:** Team Planner & Presenter, Strategic Pivot Lead, Product/UX Validator
+- **Strategic Pivot:** Led a rapid transition from an unfeasible B2B PaaS to a user-centric B2C platform (`Woosen-haejo`), optimizing for time constraints and team technical synergy.
 - **Logic & UX Design:** Co-designed administrative scoring logic leveraging Claude Opus 5 Vision AI and PostGIS open data.
 - **Pitch Execution:** Fully owned pitch preparation and delivered the final 8-minute presentation.
 ---
