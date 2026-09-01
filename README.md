@@ -89,19 +89,18 @@ Research quantifying the energy-saving efficiency of LLM weight quantization and
 ---
 ### Activities & Leadership
 
-#### **CodeGate AI Startup Hackathon & Project (`Xazz / x1zz Guard`) (2026.07)**
+#### **CodeGate AI Startup Hackathon (`Xazz / x1zz Guard`) (2026.07)**
 > **Role:** Team Leader, Project Manager, Core Toolchain Architect
-- **Proactive Team Management & IP/Reward Alignment:** Set clear onboarding guidelines, establishing transparent rules for equal prize distribution (1/N) and explicitly separating pre-existing core IP (`x1zzLang` toolchain) from new co-developed assets (guardrail rulesets, PPTs) to foster psychological safety.
-- **Agile Crisis Recovery & Scope Re-engineering:** When a key team member departed right before submission, swiftly restructured team roles—balancing core architecture refinement (governance/data bypass scenarios) and submission polishing (2-page summary, BM narrative) to hit the deadline.
-- **Strategic Technical Defense:** Preemptively identified potential judge objections (e.g., query correlation overhead, DP noise-induced accuracy loss) and devised defensive arguments, including window-based privacy filtering and adaptive noise injection strategies.
-- **Core DSL & Security Control Layer Engineering:** Designed and implemented **`x1zzLang`**, an isolated AI DSL written in Rust. Built an end-to-end toolchain combining Polars LazyFrame acceleration, Burn deep learning execution, and `x1zz Guard` (an AST-based static policy gate with an on-premise Qwen2.5-Coder sLM for dynamic code remediation).
+- **Team & IP Governance:** Established clear 1/N reward distribution and separated pre-existing core IP (`x1zzLang`) from new hackathon assets.
+- **Crisis Recovery:** Swiftly restructured roles upon sudden team departure to successfully meet submission deadlines.
+- **Defensive Engineering:** Formulated mitigation strategies against judge edge-cases (query correlation overhead, DP noise model loss).
+- **Architecture:** Built `x1zz Guard`—an AST-based static policy gate powered by an on-premise sLM (Qwen2.5-Coder) in Rust.
 
 #### **GEEKs Hackathon (2026.08.04 - 2026.08.05)**
 > **Role:** Team Presenter, Strategic Pivot Lead, Product/UX Validator
-- **Technical Pragmatism & Strategic Pivot:** During an intensive 2-day overnight hackathon under the "Sustainable Infrastructure (SDG 9)" theme, evaluated the newly formed team's tech stack constraints. Recognized that a complex B2B PaaS item was unfeasible within the timeframe, leading a decisive pivot toward a user-centric B2C civil service platform (`Woosen-haejo` / '우선해줘').
-- **Inclusive Team Collaboration & Objective Alignment:** Embraced an unfamiliar target domain, driving team alignment by focusing on user experience (UX) validation and co-designing administrative justification scoring logic (Claude Opus 5 Vision AI + PostGIS open data integration).
-- **Presentation & Outcome Delivery:** Fully owned the pitch preparation and successfully delivered the final 8-minute presentation, demonstrating strong adaptability, cross-functional alignment, and leadership under pressure.
-
+- **Strategic Pivot:** Led a rapid transition from an unfeasible B2B PaaS to a user-centric B2C platform (`Woosen-haejo`) matching team stack.
+- **Logic & UX Design:** Co-designed administrative scoring logic leveraging Claude Opus 5 Vision AI and PostGIS open data.
+- **Pitch Execution:** Fully owned pitch preparation and delivered the final 8-minute presentation.
 ---
 ## Tech Stack Summary
 
