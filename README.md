@@ -2,7 +2,7 @@
 
 **High school student (2nd year) in South Korea — building data pipeline DSLs, compilers, and AI/ML tooling in Rust.**
 
-[한국어 문서 (Korean)](./README_kr.md)
+[한국어 문서 (Korean)](./README_kr.md) · [**x1zz.com**](https://x1zz.com)
 
 ---
 
