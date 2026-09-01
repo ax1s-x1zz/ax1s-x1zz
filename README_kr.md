@@ -42,6 +42,10 @@ Polars 전처리, Burn 딥러닝 컴파일, 정적 보안 가드레일을 단일
   - PII/시크릿 탐지 기반 Policy-as-Code 가드레일, 세션별 엡실론 예산을 갖는 차등 프라이버시, SHA-256 append-only 감사 로그
   - `xazz-runner` 서브프로세스 경계 뒤에 무거운 엔진을 격리해 CLI 바이너리를 2–5MB로 유지하는 멀티 크레이트 워크스페이스
 
+<p align="center">
+  <img src="assets/ide_monitor.png" alt="Xazz IDE 모니터" width="600"/>
+</p>
+
 ### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — 데이터 파이프라인 언어
 접근 가능한 데이터 분석을 탐구하는 Rust 기반 DSL로, `.xzz` 스크립트를 최적화된 Polars LazyFrame 실행 계획으로 컴파일합니다.
 
@@ -85,6 +89,10 @@ LLM 가중치 양자화의 에너지 절감 효율과 그리드 Jevons 역설을
   - 변곡점 루트가 진폭에 독립적임을 증명
   - 수요 탄력성 E_d > 1일 때만 그리드 부하가 증가함을 SymPy로 상징적으로 증명, Jevons 역설 폐쇄형 정식화
   - 데이터 소스 라벨링(문헌 기반 vs GPU 측정)을 엄격하게 지키는 재현 가능한 실험 파이프라인
+
+<p align="center">
+  <img src="assets/fig15_dashboard.png" alt="LLM PCAG 대시보드" width="600"/>
+</p>
 
 ---
 ### 대외 활동 및 리더십 (Activities & Leadership)

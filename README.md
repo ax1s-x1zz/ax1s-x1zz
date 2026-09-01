@@ -42,6 +42,10 @@ An AI pipeline DSL in Rust that unifies Polars preprocessing, Burn deep-learning
   - Policy-as-Code guardrails (PII/secret detection), differential privacy with a per-session epsilon budget, and a SHA-256 append-only audit log
   - Multi-crate Cargo workspace that keeps the CLI binary 2–5 MB by isolating heavy engines behind the `xazz-runner` subprocess boundary
 
+<p align="center">
+  <img src="assets/ide_monitor.png" alt="Xazz IDE Monitor" width="600"/>
+</p>
+
 ### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — Data Pipeline Language
 A Rust-based DSL for exploring accessible data analysis, compiling `.xzz` scripts into optimized Polars LazyFrame execution plans.
 
@@ -85,6 +89,10 @@ Research quantifying the energy-saving efficiency of LLM weight quantization and
   - Proves the inflection root is structurally independent of amplitude
   - Formalizes the Jevons Paradox in closed form with a symbolic proof in SymPy (grid load increases iff demand elasticity E_d > 1)
   - Reproducible experiment pipeline with strict data-source labeling (reference-literature vs GPU-measured)
+
+<p align="center">
+  <img src="assets/fig15_dashboard.png" alt="LLM PCAG Dashboard" width="600"/>
+</p>
 
 ---
 ### Activities & Leadership
