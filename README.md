@@ -8,11 +8,9 @@
 
 ## Overview
 
-**Building type-safe, compiled data pipeline DSLs and high-performance ML infrastructure in Rust.**
+I write compilers and the languages they compile. My main line of work is a family of domain-specific languages that turn `.xzz` scripts into optimized Polars execution plans, built from scratch in Rust — lexer to codegen. Around that core sit a visual editor, a Python→`.xzz` transpiler, and applied research on LLM efficiency.
 
-I build data pipeline languages and the tooling around them. My main line of work is a family of domain-specific languages that compile `.xzz` scripts into optimized Polars execution plans, backed by compilers written from scratch in Rust. Alongside the language itself, I work on visual editors, source-to-source transpilers, and applied research on LLM efficiency.
-
-The core design direction: move errors from runtime to compile time, keep the CLI lightweight by isolating heavy dependencies behind a subprocess boundary, and make the whole path from CSV to trained model expressible in a single script.
+The design direction stays the same across all of them: move errors from runtime to compile time, keep the CLI small by pushing heavy dependencies behind a subprocess boundary, and make the whole path from CSV to trained model expressible in a single script.
 
 ---
 
@@ -47,7 +45,7 @@ An AI pipeline DSL in Rust that unifies Polars preprocessing, Burn deep-learning
 </p>
 
 ### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — Data Pipeline Language
-A Rust-based DSL for exploring accessible data analysis, compiling `.xzz` scripts into optimized Polars LazyFrame execution plans.
+A Rust DSL for making data analysis approachable, compiling `.xzz` scripts into optimized Polars LazyFrame execution plans.
 
 - **Tech stack**: Rust, Polars, clap, serde
 - **Implementation highlights**:
@@ -59,7 +57,7 @@ A Rust-based DSL for exploring accessible data analysis, compiling `.xzz` script
   - The foundation that later grew into Xazz
 
 ### [py2xzz](https://github.com/x1zzdev/py2xzz) — Python → `.xzz` Transpiler
-A Rust CLI tool that converts Python data and deep-learning pipelines (Pandas / PyTorch) into `.xzz` DSL scripts.
+A Rust CLI that converts Python data and deep-learning pipelines (Pandas / PyTorch) into `.xzz` DSL scripts.
 
 - **Tech stack**: Rust, serde
 - **Implementation highlights**:
@@ -70,7 +68,7 @@ A Rust CLI tool that converts Python data and deep-learning pipelines (Pandas / 
   - Output maps 1:1 to the `xazz-core` AST and passes `xazz check`
 
 ### [x1zzLang Visual IDE](https://github.com/x1zzdev/x1zzLang-visual-ide)
-A graphical pipeline editor for x1zzLang that designs DAG workflows and runs them natively.
+A graphical pipeline editor for x1zzLang — design a DAG workflow visually and run it natively.
 
 - **Tech stack**: React 18, Vite, @xyflow/react, i18next
 - **Implementation highlights**:
@@ -80,7 +78,7 @@ A graphical pipeline editor for x1zzLang that designs DAG workflows and runs the
   - Multi-workflow tabs, undo/redo, auto-save, container grouping, and Korean/English UI
 
 ### [LLM PCAG Research](https://github.com/ax1s-x1zz/llm-pcag-research) — The Power Wall of LLM Quantization
-Research quantifying the energy-saving efficiency of LLM weight quantization and the macro-grid Jevons paradox.
+Research quantifying how much energy LLM weight quantization actually saves — and the macro-grid Jevons paradox it creates.
 
 - **Tech stack**: Python (NumPy, pandas, SciPy, SymPy, Matplotlib)
 - **Implementation highlights**:
@@ -99,16 +97,16 @@ Research quantifying the energy-saving efficiency of LLM weight quantization and
 
 #### **CodeGate AI Startup Hackathon (`Xazz / x1zz Guard`) (2026.07)**
 > **Role:** Team Leader, Project Manager, Core Toolchain Architect
-- **Team & IP Governance:** Established clear 1/N reward distribution and separated pre-existing core IP (`x1zzLang`) from new hackathon assets.
-- **Crisis Recovery:** Swiftly restructured roles upon sudden team departure to successfully meet submission deadlines.
-- **Defensive Engineering:** Formulated mitigation strategies against judge edge-cases (query correlation overhead, DP noise model loss).
-- **Architecture:** Designed `x1zz Guard`—an AST-based static policy gate architecture powered by an on-premise sLM (Qwen2.5-Coder) in Rust.
+- **Team & IP Governance:** Set a clear 1/N reward split and separated pre-existing core IP (`x1zzLang`) from new hackathon assets.
+- **Crisis Recovery:** When a teammate left mid-project, restructured roles quickly to still meet the submission deadline.
+- **Defensive Engineering:** Prepared concrete answers to likely judge edge-cases (query correlation overhead, DP noise model loss).
+- **Architecture:** Designed `x1zz Guard` — an AST-based static policy gate powered by an on-premise sLM (Qwen2.5-Coder) in Rust.
 
 #### **GEEKs Hackathon (2026.08.04 - 2026.08.05)**
 > **Role:** Team Planner & Presenter, Strategic Pivot Lead, Product/UX Validator
-- **Strategic Pivot:** Led a rapid transition from an unfeasible B2B PaaS to a user-centric B2C platform (`Woosen-haejo`), optimizing for time constraints and team technical synergy.
-- **Logic & UX Design:** Co-designed administrative scoring logic leveraging Claude Opus 5 Vision AI and PostGIS open data.
-- **Pitch Execution:** Fully owned pitch preparation and delivered the final 8-minute presentation.
+- **Strategic Pivot:** With a tight deadline and mixed team skills, pivoted from an unfeasible B2B PaaS to a user-centric B2C platform (`Woosen-haejo`).
+- **Logic & UX Design:** Co-designed the admin scoring logic with Claude Opus 5 Vision AI and PostGIS open data.
+- **Pitch Execution:** Owned pitch prep end-to-end and delivered the final 8-minute presentation.
 ---
 ## Tech Stack Summary
 
@@ -125,6 +123,6 @@ Research quantifying the energy-saving efficiency of LLM weight quantization and
 
 ## About
 
-These projects are part of an ongoing exploration of type-safe, compiled data pipelines. If you're working on similar problems in compiler design, data tooling, or ML infrastructure, I'd be glad to talk.
+These projects are part of an ongoing exploration of type-safe, compiled data pipelines. If you're working on compiler design, data tooling, or ML infrastructure, I'd be glad to talk.
 
 - **Email**: [ax1s@x1zz.com](mailto:ax1s@x1zz.com)
