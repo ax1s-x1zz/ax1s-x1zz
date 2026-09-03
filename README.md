@@ -93,6 +93,17 @@ Research quantifying how much energy LLM weight quantization actually saves — 
 </p>
 
 ---
+### Open Source Contributions
+
+#### [tracel-ai/burn](https://github.com/tracel-ai/burn) — Rust deep learning framework (15k★)
+
+**Validate matmul batch-broadcast in `TensorCheck`** — [merged PR #5555](https://github.com/tracel-ai/burn/pull/5555)
+
+- Added a batch-dimension broadcastability check to `TensorCheck::matmul`, the public tensor-API validation layer that runs *before* backend dispatch — so every backend (not just ndarray) now reports a consistent `Tensor Operation Error` instead of an inconsistent backend-specific panic.
+- Wrote a regression test that fails if the check is removed, then narrowed it after review so it exercises this exact path (not the pre-existing inner-dimension check).
+- Process: first PR (#5542) was rejected as backend-local (ndarray is deprecated) with a hot-path allocation; reworked onto the shared `TensorCheck` layer per maintainer direction, passed review, and was merged by the maintainer.
+
+---
 ### Activities & Leadership
 
 #### **CodeGate AI Startup Hackathon (`Xazz / x1zz Guard`) (2026.07)**

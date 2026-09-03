@@ -93,6 +93,17 @@ LLM 가중치 양자화가 실제로 얼마나 에너지를 절감하는지, 그
 </p>
 
 ---
+### 오픈소스 기여 (Open Source Contributions)
+
+#### [tracel-ai/burn](https://github.com/tracel-ai/burn) — Rust 딥러닝 프레임워크 (15k★)
+
+**`TensorCheck`에 matmul 배치 브로드캐스트 검증 추가** — [머지된 PR #5555](https://github.com/tracel-ai/burn/pull/5555)
+
+- `TensorCheck::matmul`에 배치 차원 브로드캐스트 가능성 검증을 추가했습니다. `TensorCheck`는 백엔드 디스패치 **이전에** 실행되는 공개 텐서 API 검증 레이어라서, ndarray 등 특정 백엔드에 국한되지 않고 모든 백엔드가 일관된 `Tensor Operation Error`를 받도록 했습니다 (기존에는 백엔드마다 제각각 다른 panic이 발생).
+- 검증을 제거하면 테스트가 실패하도록 하는 회귀 테스트를 작성했고, 리뷰 이후 테스트 범위를 좁혀 기존 inner-dimension 검증이 아닌 이번 검증이 정확히 panic을 일으키는 경로만 검증하도록 다듬었습니다.
+- 과정: 첫 PR(#5542)은 백엔드 로컬(ndarray는 deprecated) + 핫패스 힙 할당이라는 리뷰로 거절되었고, 메인테이너가 제시한 방향대로 공통 `TensorCheck` 레이어로 재작업해 리뷰를 통과하고 메인테이너가 직접 머지했습니다.
+
+---
 ### 대외 활동 및 리더십 (Activities & Leadership)
 
 #### **코드게이트 AI 스타트업 해커톤 (`Xazz / x1zz Guard`) (2026.07)**
