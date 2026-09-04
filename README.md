@@ -106,6 +106,18 @@ Research quantifying how much energy LLM weight quantization actually saves — 
 ---
 ### Activities & Leadership
 
+#### **Trendsetter — Founder & Lead Architect (2026.03 – Present)**
+> **Role:** Club Founder, Pipeline & Curriculum Architect, Platform Engineer
+
+- **Club Design & Onboarding Framework**
+  - Founded `Trendsetter`, a semiconductor and tech-focused data analysis club, designing a step-by-step exploratory roadmap to lower entry barriers for Python and data analysis.
+  - Authored and distributed initial competency diagnosis forms, Markdown writing guides, and hands-on Python (Pandas, Matplotlib, Plotly) guidelines.
+
+- **Environment & Educational Starter-Kit Engineering**
+  - **CPU vs. GPU Specs Analysis**: Engineered open-source GitHub repositories ([ax1s-x1zz/trendsetter-semiconductor-01-cpu-vs-gpu](https://github.com/ax1s-x1zz/trendsetter-semiconductor-01-cpu-vs-gpu)) containing Google Colab notebooks, curated hardware datasets, and Google Forms for assignment submission.
+  - **Moore's Law & Huang's Law Verification**: Engineered Colab environments enabling mathematical and statistical verification of semiconductor transistor density via log-scale ($\log$) transformation and linear regression analysis.
+  - **Industry Data Analysis**: Released data preprocessing templates based on official semiconductor export data from MOTIE and KOSIS.
+
 #### **CodeGate AI Startup Hackathon (`Xazz / x1zz Guard`) (2026.07)**
 > **Role:** Team Leader, Project Manager, Core Toolchain Architect
 - **Team & IP Governance:** Set a clear 1/N reward split and separated pre-existing core IP (`x1zzLang`) from new hackathon assets.
