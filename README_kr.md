@@ -103,6 +103,11 @@ LLM 가중치 양자화가 실제로 얼마나 에너지를 절감하는지, 그
 - 검증을 제거하면 테스트가 실패하도록 하는 회귀 테스트를 작성했고, 리뷰 이후 테스트 범위를 좁혀 기존 inner-dimension 검증이 아닌 이번 검증이 정확히 panic을 일으키는 경로만 검증하도록 다듬었습니다.
 - 과정: 첫 PR(#5542)은 백엔드 로컬(ndarray는 deprecated) + 핫패스 힙 할당이라는 리뷰로 거절되었고, 메인테이너가 제시한 방향대로 공통 `TensorCheck` 레이어로 재작업해 리뷰를 통과하고 메인테이너가 직접 머지했습니다.
 
+**`TensorCheck`를 요소별 이항 연산에 적용** — [머지된 PR #5564](https://github.com/tracel-ai/burn/pull/5564)
+
+- `add`/`sub`/`mul`/`div`는 이미 `TensorCheck`로 device·브로드캐스트 호환성을 검증했지만, `remainder`, `powi`, `powf`, `hypot`, `atan2`는 검증을 건너뛰고 백엔드로 직행해 제각각 다른 panic을 냈습니다. 이 5개 연산에 기존 패턴과 동일하게 `binary_ops_ew`를 적용했습니다.
+- 연산마다 `Tensor Operation Error`를 검증하는 회귀 테스트를 추가했고, 검증을 제거하면 테스트가 실패함을 확인했습니다(false positive 방지). 유효한 브로드캐스트는 여전히 통과합니다.
+
 ---
 ### 대외 활동 및 리더십 (Activities & Leadership)
 

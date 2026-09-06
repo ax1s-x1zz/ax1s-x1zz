@@ -103,6 +103,11 @@ Research quantifying how much energy LLM weight quantization actually saves — 
 - Wrote a regression test that fails if the check is removed, then narrowed it after review so it exercises this exact path (not the pre-existing inner-dimension check).
 - Process: first PR (#5542) was rejected as backend-local (ndarray is deprecated) with a hot-path allocation; reworked onto the shared `TensorCheck` layer per maintainer direction, passed review, and was merged by the maintainer.
 
+**Apply `TensorCheck` to element-wise binary ops** — [merged PR #5564](https://github.com/tracel-ai/burn/pull/5564)
+
+- Element-wise ops like `add`/`sub`/`mul`/`div` already validated device + broadcast compatibility via `TensorCheck`, but `remainder`, `powi`, `powf`, `hypot`, and `atan2` bypassed it and fell through to backend-specific panics. Added `binary_ops_ew` to all five, matching the existing pattern.
+- Each op got a regression test asserting the `Tensor Operation Error`; I confirmed every test fails if the check is removed (not passing for the wrong reason) and that valid broadcasts still pass.
+
 ---
 ### Activities & Leadership
 
