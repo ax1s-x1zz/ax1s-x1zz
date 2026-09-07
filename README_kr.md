@@ -108,6 +108,14 @@ LLM 가중치 양자화가 실제로 얼마나 에너지를 절감하는지, 그
 - `add`/`sub`/`mul`/`div`는 이미 `TensorCheck`로 device·브로드캐스트 호환성을 검증했지만, `remainder`, `powi`, `powf`, `hypot`, `atan2`는 검증을 건너뛰고 백엔드로 직행해 제각각 다른 panic을 냈습니다. 이 5개 연산에 기존 패턴과 동일하게 `binary_ops_ew`를 적용했습니다.
 - 연산마다 `Tensor Operation Error`를 검증하는 회귀 테스트를 추가했고, 검증을 제거하면 테스트가 실패함을 확인했습니다(false positive 방지). 유효한 브로드캐스트는 여전히 통과합니다.
 
+#### [apache/arrow-rs](https://github.com/apache/arrow-rs) — Rust로 구현한 Apache Arrow & Parquet (3.6k★)
+
+**IPC run-ends 재인코딩에서 `BufferBuilder` 대신 `Vec` 사용** — [머지된 PR #11005](https://github.com/apache/arrow-rs/pull/11005)
+
+- `arrow-ipc`의 `into_zero_offset_run_array`는 IPC로 쓰기 전에 슬라이스된 run-end 배열을 재인코딩하는데, 기존에는 새 offsets를 `BufferBuilder::<R::Native>`로 만들었습니다. 이를 `Vec::<R::Native>`로 교체했습니다 (유지보수자들이 [#10245](https://github.com/apache/arrow-rs/issues/10245)에서 "Rust의 고도로 최적화된 `Vec`이 빌더 추상화보다 우세하다"고 관찰한 바로 그 전환 작업).
+- 에픽 목록의 다른 후보들은 이미 변환돼 있었고, main 기준으로 실제로 `BufferBuilder`가 남은 곳이 이 한 곳이었습니다. 이미 변환된 곳을 다시 고치는 대신 진짜 남은 경로를 찾아서 작업했습니다.
+- run-array 라운드트립 테스트가 모든 슬라이스 길이와 양쪽 slice offset에 대해 재인코딩 경로를 검증하므로, `arrow-ipc` 전체 테스트로 확인했습니다. 메인테이너 2명의 승인 후 머지됐습니다. (후속 interval 파싱 PR [PR #11006](https://github.com/apache/arrow-rs/pull/11006)은 리뷰 중입니다.)
+
 ---
 ### 대외 활동 및 리더십 (Activities & Leadership)
 

@@ -108,6 +108,14 @@ Research quantifying how much energy LLM weight quantization actually saves — 
 - Element-wise ops like `add`/`sub`/`mul`/`div` already validated device + broadcast compatibility via `TensorCheck`, but `remainder`, `powi`, `powf`, `hypot`, and `atan2` bypassed it and fell through to backend-specific panics. Added `binary_ops_ew` to all five, matching the existing pattern.
 - Each op got a regression test asserting the `Tensor Operation Error`; I confirmed every test fails if the check is removed (not passing for the wrong reason) and that valid broadcasts still pass.
 
+#### [apache/arrow-rs](https://github.com/apache/arrow-rs) — Apache Arrow & Parquet in Rust (3.6k★)
+
+**Use `Vec` instead of `BufferBuilder` when re-encoding IPC run-ends** — [merged PR #11005](https://github.com/apache/arrow-rs/pull/11005)
+
+- `arrow-ipc`'s `into_zero_offset_run_array` re-encodes sliced run-end arrays before writing them to IPC; it built the new offsets with `BufferBuilder::<R::Native>`. Replaced it with `Vec::<R::Native>` (the change this project requested via [#10245](https://github.com/apache/arrow-rs/issues/10245), where maintainers observed that Rust's highly-optimized `Vec` typically wins over the builder abstraction).
+- This was the one callsite still using `BufferBuilder` on current main — the other candidates in the epic's list had already been converted, so I located the real remaining path rather than re-doing a converted one.
+- Verified with the full `arrow-ipc` suite, including the run-array roundtrip tests that exercise the re-encoding path for every slice length and both slice offsets. Approved by two maintainers and merged. (The interval-parsing follow-up, [PR #11006](https://github.com/apache/arrow-rs/pull/11006), is under review.)
+
 ---
 ### Activities & Leadership
 
