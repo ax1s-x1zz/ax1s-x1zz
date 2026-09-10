@@ -108,6 +108,12 @@ LLM 가중치 양자화가 실제로 얼마나 에너지를 절감하는지, 그
 - `add`/`sub`/`mul`/`div`는 이미 `TensorCheck`로 device·브로드캐스트 호환성을 검증했지만, `remainder`, `powi`, `powf`, `hypot`, `atan2`는 검증을 건너뛰고 백엔드로 직행해 제각각 다른 panic을 냈습니다. 이 5개 연산에 기존 패턴과 동일하게 `binary_ops_ew`를 적용했습니다.
 - 연산마다 `Tensor Operation Error`를 검증하는 회귀 테스트를 추가했고, 검증을 제거하면 테스트가 실패함을 확인했습니다(false positive 방지). 유효한 브로드캐스트는 여전히 통과합니다.
 
+**`TensorCheck`에 matmul rank 검증 추가** — [머지된 PR #5580](https://github.com/tracel-ai/burn/pull/5580)
+
+- `Tensor::matmul`은 `Tensor<D, K>`에 대해 제네릭하게 정의되어 rank-1 입력도 컴파일되지만 행렬 차원이 없습니다. 그리고 `TensorCheck::matmul`이 `D < 2`에서 short-circuit하여 이 호출이 백엔드까지 도달했고, 백엔드마다 제각각 실패했습니다: ndarray는 `attempt to subtract with overflow`로 panic(`ndims == 1`일 때 `shape_lhs[ndims - 2]` 언더플로), `tch`는 1D×1D `matmul`을 dot product로 처리해 `Tensor<1>` 출력 rank와 모순되는 0차원 스칼라를 반환, `cubecl`은 유효한 커널 입력이 없었습니다.
+- `TensorCheck::matmul`이 이제 `tri()` 검증과 동일하게 rank < 2에 대해 명확한 에러를 등록하며, `burn-backend-tests/tests/tensor/float/ops/matmul.rs`에 회귀 테스트(`float_should_panic_when_rank_is_less_than_2`)를 추가했습니다.
+- ndarray 백엔드 기준으로 검증: 검증이 없으면 새 테스트가 기대 메시지가 아닌 백엔드 overflow panic으로 실패함을 확인했습니다.
+
 #### [apache/arrow-rs](https://github.com/apache/arrow-rs) — Rust로 구현한 Apache Arrow & Parquet (3.6k★)
 
 **IPC run-ends 재인코딩에서 `BufferBuilder` 대신 `Vec` 사용** — [머지된 PR #11005](https://github.com/apache/arrow-rs/pull/11005)

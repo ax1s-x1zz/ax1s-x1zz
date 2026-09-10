@@ -108,6 +108,12 @@ Research quantifying how much energy LLM weight quantization actually saves — 
 - Element-wise ops like `add`/`sub`/`mul`/`div` already validated device + broadcast compatibility via `TensorCheck`, but `remainder`, `powi`, `powf`, `hypot`, and `atan2` bypassed it and fell through to backend-specific panics. Added `binary_ops_ew` to all five, matching the existing pattern.
 - Each op got a regression test asserting the `Tensor Operation Error`; I confirmed every test fails if the check is removed (not passing for the wrong reason) and that valid broadcasts still pass.
 
+**Validate matmul rank in `TensorCheck`** — [merged PR #5580](https://github.com/tracel-ai/burn/pull/5580)
+
+- `Tensor::matmul` is defined generically over `Tensor<D, K>`, so rank-1 inputs compile but have no matrix dimensions — and `TensorCheck::matmul` short-circuited for `D < 2`, letting them reach the backend where each failed differently: ndarray panicked with `attempt to subtract with overflow` (`shape_lhs[ndims - 2]` underflows when `ndims == 1`), `tch` treated 1D×1D `matmul` as a dot product and returned a 0-dim scalar inconsistent with the `Tensor<1>` output rank, and `cubecl` had no valid kernel input.
+- `TensorCheck::matmul` now registers a clear error for ranks < 2, mirroring the `tri()` check, with a regression test (`float_should_panic_when_rank_is_less_than_2`) in `burn-backend-tests/tests/tensor/float/ops/matmul.rs`.
+- Verified against the ndarray backend: without the check, the new test fails with the backend overflow panic rather than the expected message.
+
 #### [apache/arrow-rs](https://github.com/apache/arrow-rs) — Apache Arrow & Parquet in Rust (3.6k★)
 
 **Use `Vec` instead of `BufferBuilder` when re-encoding IPC run-ends** — [merged PR #11005](https://github.com/apache/arrow-rs/pull/11005)
