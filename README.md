@@ -95,32 +95,25 @@ Research quantifying how much energy LLM weight quantization actually saves — 
 ---
 ### Open Source Contributions
 
-#### [tracel-ai/burn](https://github.com/tracel-ai/burn) — Rust deep learning framework (15k★)
+Upstream contributions to **[tracel-ai/burn](https://github.com/tracel-ai/burn)** and **[apache/arrow-rs](https://github.com/apache/arrow-rs)** — 5 merged PRs; one reworked across review cycles into a shared-layer fix.
 
-**Validate matmul batch-broadcast in `TensorCheck`** — [merged PR #5555](https://github.com/tracel-ai/burn/pull/5555)
+**Implement `Min` / `Max` `scatter` / `select_assign` across every backend** — [merged PR #5582](https://github.com/tracel-ai/burn/pull/5582)
 
-- Added a batch-dimension broadcastability check to `TensorCheck::matmul`, the public tensor-API validation layer that runs *before* backend dispatch — so every backend (not just ndarray) now reports a consistent `Tensor Operation Error` instead of an inconsistent backend-specific panic.
-- Wrote a regression test that fails if the check is removed, then narrowed it after review so it exercises this exact path (not the pre-existing inner-dimension check).
-- Process: first PR (#5542) was rejected as backend-local (ndarray is deprecated) with a hot-path allocation; reworked onto the shared `TensorCheck` layer per maintainer direction, passed review, and was merged by the maintainer.
+- Closed the last gap in the element-wise `scatter` / `select_assign` API left open by [#5522](https://github.com/tracel-ai/burn/issues/5522): `Assign`, `Add`, and `Mul` were supported, but `Min` / `Max` hit `unimplemented!` on every backend — even though `scatter_nd` already implemented all five variants. Delivered the missing variants end-to-end.
+- **All four backends**: ndarray primitives, `flex` helpers that share the existing update walkers, `cubecl` entries reusing the `BinaryMinOp` / `BinaryMaxOp` kernels, and `tch` via `scatter_reduce` / `index_reduce_` (`"amin"` / `"amax"`).
+- **Autodiff**: backward passes for `Min` / `Max` `scatter` and `select_assign`, mirroring the `scatter_nd` Min/Max gradient — winner masks from comparisons, ties credited to both operands, unique indices required.
+- Dispatch matches now enumerate every `IndexingUpdateOp` variant, so an unsupported combination fails at compile time instead of panicking at runtime.
+- Verified with 1839 tensor + 572 autodiff tests (`--features ndarray`) and clippy-clean on `burn-ndarray`, `burn-flex`, `burn-autodiff`, and `burn-cubecl`; confirmed the new autodiff tests fail against the old `unimplemented!` when the backward is removed.
 
-**Apply `TensorCheck` to element-wise binary ops** — [merged PR #5564](https://github.com/tracel-ai/burn/pull/5564)
+<details>
+<summary><b>Other merged contributions (4)</b></summary>
 
-- Element-wise ops like `add`/`sub`/`mul`/`div` already validated device + broadcast compatibility via `TensorCheck`, but `remainder`, `powi`, `powf`, `hypot`, and `atan2` bypassed it and fell through to backend-specific panics. Added `binary_ops_ew` to all five, matching the existing pattern.
-- Each op got a regression test asserting the `Tensor Operation Error`; I confirmed every test fails if the check is removed (not passing for the wrong reason) and that valid broadcasts still pass.
+- **[burn #5555](https://github.com/tracel-ai/burn/pull/5555)** — Batch-dimension broadcast validation in `TensorCheck::matmul`, so every backend raises a consistent `Tensor Operation Error` before dispatch. (Reworked from #5542 onto the shared `TensorCheck` layer per maintainer direction.)
+- **[burn #5564](https://github.com/tracel-ai/burn/pull/5564)** — Applied `TensorCheck` (`binary_ops_ew`) to `remainder`, `powi`, `powf`, `hypot`, and `atan2`, each with a regression test.
+- **[burn #5580](https://github.com/tracel-ai/burn/pull/5580)** — Rank validation in `TensorCheck::matmul`; ranks < 2 now return a clear error instead of backend-specific panics or inconsistent results.
+- **[arrow-rs #11005](https://github.com/apache/arrow-rs/pull/11005)** — Replaced `BufferBuilder` with `Vec` when re-encoding IPC run-ends (epic [#10245](https://github.com/apache/arrow-rs/issues/10245)); merged with two maintainer approvals. Follow-up interval-parsing PR [#11006](https://github.com/apache/arrow-rs/pull/11006) is under review.
 
-**Validate matmul rank in `TensorCheck`** — [merged PR #5580](https://github.com/tracel-ai/burn/pull/5580)
-
-- `Tensor::matmul` is defined generically over `Tensor<D, K>`, so rank-1 inputs compile but have no matrix dimensions — and `TensorCheck::matmul` short-circuited for `D < 2`, letting them reach the backend where each failed differently: ndarray panicked with `attempt to subtract with overflow` (`shape_lhs[ndims - 2]` underflows when `ndims == 1`), `tch` treated 1D×1D `matmul` as a dot product and returned a 0-dim scalar inconsistent with the `Tensor<1>` output rank, and `cubecl` had no valid kernel input.
-- `TensorCheck::matmul` now registers a clear error for ranks < 2, mirroring the `tri()` check, with a regression test (`float_should_panic_when_rank_is_less_than_2`) in `burn-backend-tests/tests/tensor/float/ops/matmul.rs`.
-- Verified against the ndarray backend: without the check, the new test fails with the backend overflow panic rather than the expected message.
-
-#### [apache/arrow-rs](https://github.com/apache/arrow-rs) — Apache Arrow & Parquet in Rust (3.6k★)
-
-**Use `Vec` instead of `BufferBuilder` when re-encoding IPC run-ends** — [merged PR #11005](https://github.com/apache/arrow-rs/pull/11005)
-
-- `arrow-ipc`'s `into_zero_offset_run_array` re-encodes sliced run-end arrays before writing them to IPC; it built the new offsets with `BufferBuilder::<R::Native>`. Replaced it with `Vec::<R::Native>` (the change this project requested via [#10245](https://github.com/apache/arrow-rs/issues/10245), where maintainers observed that Rust's highly-optimized `Vec` typically wins over the builder abstraction).
-- This was the one callsite still using `BufferBuilder` on current main — the other candidates in the epic's list had already been converted, so I located the real remaining path rather than re-doing a converted one.
-- Verified with the full `arrow-ipc` suite, including the run-array roundtrip tests that exercise the re-encoding path for every slice length and both slice offsets. Approved by two maintainers and merged. (The interval-parsing follow-up, [PR #11006](https://github.com/apache/arrow-rs/pull/11006), is under review.)
+</details>
 
 ---
 ### Activities & Leadership

@@ -95,32 +95,25 @@ LLM 가중치 양자화가 실제로 얼마나 에너지를 절감하는지, 그
 ---
 ### 오픈소스 기여 (Open Source Contributions)
 
-#### [tracel-ai/burn](https://github.com/tracel-ai/burn) — Rust 딥러닝 프레임워크 (15k★)
+**[tracel-ai/burn](https://github.com/tracel-ai/burn)**과 **[apache/arrow-rs](https://github.com/apache/arrow-rs)**에 업스트림 기여 — 머지된 PR 5개. 그중 하나는 리뷰 과정에서 공통 레이어 수정으로 재작업.
 
-**`TensorCheck`에 matmul 배치 브로드캐스트 검증 추가** — [머지된 PR #5555](https://github.com/tracel-ai/burn/pull/5555)
+**모든 백엔드에 `Min` / `Max` `scatter` / `select_assign` 구현** — [머지된 PR #5582](https://github.com/tracel-ai/burn/pull/5582)
 
-- `TensorCheck::matmul`에 배치 차원 브로드캐스트 가능성 검증을 추가했습니다. `TensorCheck`는 백엔드 디스패치 **이전에** 실행되는 공개 텐서 API 검증 레이어라서, ndarray 등 특정 백엔드에 국한되지 않고 모든 백엔드가 일관된 `Tensor Operation Error`를 받도록 했습니다 (기존에는 백엔드마다 제각각 다른 panic이 발생).
-- 검증을 제거하면 테스트가 실패하도록 하는 회귀 테스트를 작성했고, 리뷰 이후 테스트 범위를 좁혀 기존 inner-dimension 검증이 아닌 이번 검증이 정확히 panic을 일으키는 경로만 검증하도록 다듬었습니다.
-- 과정: 첫 PR(#5542)은 백엔드 로컬(ndarray는 deprecated) + 핫패스 힙 할당이라는 리뷰로 거절되었고, 메인테이너가 제시한 방향대로 공통 `TensorCheck` 레이어로 재작업해 리뷰를 통과하고 메인테이너가 직접 머지했습니다.
+- [#5522](https://github.com/tracel-ai/burn/issues/5522)로 남겨진 요소별 `scatter` / `select_assign` API의 마지막 공백을 채웠습니다. `Assign`, `Add`, `Mul`은 지원됐지만 `Min` / `Max`는 모든 백엔드에서 `unimplemented!`에 걸렸습니다 (`scatter_nd`는 이미 다섯 변형을 모두 구현했는데도). 빠진 변형을 end-to-end로 구현했습니다.
+- **네 백엔드 전부**: ndarray 프리미티브, 기존 업데이트 워커를 공유하는 `flex` 헬퍼, `BinaryMinOp` / `BinaryMaxOp` 커널을 재사용하는 `cubecl` 항목, `scatter_reduce` / `index_reduce_`(`"amin"` / `"amax"`)를 쓰는 `tch`.
+- **Autodiff**: `Min` / `Max` `scatter`와 `select_assign`의 backward 패스를 `scatter_nd` Min/Max 그래디언트와 동일하게 구현 — 비교 기반 winner 마스크, 동률은 양쪽 입력에 귀속, unique index 요구.
+- 이제 dispatch match가 모든 `IndexingUpdateOp` 변형을 열거하므로, 지원되지 않는 조합은 런타임 panic 대신 컴파일 타임에 실패합니다.
+- `--features ndarray`로 텐서 1839개 + autodiff 572개 테스트 통과, `burn-ndarray`·`burn-flex`·`burn-autodiff`·`burn-cubecl` clippy 클린. backward를 제거하면 새 autodiff 테스트가 기존 `unimplemented!`로 실패함도 확인했습니다.
 
-**`TensorCheck`를 요소별 이항 연산에 적용** — [머지된 PR #5564](https://github.com/tracel-ai/burn/pull/5564)
+<details>
+<summary><b>그 외 머지된 기여 (4)</b></summary>
 
-- `add`/`sub`/`mul`/`div`는 이미 `TensorCheck`로 device·브로드캐스트 호환성을 검증했지만, `remainder`, `powi`, `powf`, `hypot`, `atan2`는 검증을 건너뛰고 백엔드로 직행해 제각각 다른 panic을 냈습니다. 이 5개 연산에 기존 패턴과 동일하게 `binary_ops_ew`를 적용했습니다.
-- 연산마다 `Tensor Operation Error`를 검증하는 회귀 테스트를 추가했고, 검증을 제거하면 테스트가 실패함을 확인했습니다(false positive 방지). 유효한 브로드캐스트는 여전히 통과합니다.
+- **[burn #5555](https://github.com/tracel-ai/burn/pull/5555)** — `TensorCheck::matmul`에 배치 차원 브로드캐스트 검증을 추가해, 디스패치 이전에 모든 백엔드가 일관된 `Tensor Operation Error`를 받도록. (메인테이너 방향에 따라 #5542를 공통 `TensorCheck` 레이어로 재작업.)
+- **[burn #5564](https://github.com/tracel-ai/burn/pull/5564)** — `remainder`, `powi`, `powf`, `hypot`, `atan2`에 `TensorCheck`(`binary_ops_ew`) 적용, 각각 회귀 테스트 추가.
+- **[burn #5580](https://github.com/tracel-ai/burn/pull/5580)** — `TensorCheck::matmul`에 rank 검증 추가; rank < 2가 백엔드별 panic이나 불일치 결과 대신 명확한 에러를 반환.
+- **[arrow-rs #11005](https://github.com/apache/arrow-rs/pull/11005)** — IPC run-ends 재인코딩에서 `BufferBuilder`를 `Vec`으로 교체(에픽 [#10245](https://github.com/apache/arrow-rs/issues/10245)); 메인테이너 2명 승인 후 머지. 후속 interval 파싱 PR [#11006](https://github.com/apache/arrow-rs/pull/11006)은 리뷰 중.
 
-**`TensorCheck`에 matmul rank 검증 추가** — [머지된 PR #5580](https://github.com/tracel-ai/burn/pull/5580)
-
-- `Tensor::matmul`은 `Tensor<D, K>`에 대해 제네릭하게 정의되어 rank-1 입력도 컴파일되지만 행렬 차원이 없습니다. 그리고 `TensorCheck::matmul`이 `D < 2`에서 short-circuit하여 이 호출이 백엔드까지 도달했고, 백엔드마다 제각각 실패했습니다: ndarray는 `attempt to subtract with overflow`로 panic(`ndims == 1`일 때 `shape_lhs[ndims - 2]` 언더플로), `tch`는 1D×1D `matmul`을 dot product로 처리해 `Tensor<1>` 출력 rank와 모순되는 0차원 스칼라를 반환, `cubecl`은 유효한 커널 입력이 없었습니다.
-- `TensorCheck::matmul`이 이제 `tri()` 검증과 동일하게 rank < 2에 대해 명확한 에러를 등록하며, `burn-backend-tests/tests/tensor/float/ops/matmul.rs`에 회귀 테스트(`float_should_panic_when_rank_is_less_than_2`)를 추가했습니다.
-- ndarray 백엔드 기준으로 검증: 검증이 없으면 새 테스트가 기대 메시지가 아닌 백엔드 overflow panic으로 실패함을 확인했습니다.
-
-#### [apache/arrow-rs](https://github.com/apache/arrow-rs) — Rust로 구현한 Apache Arrow & Parquet (3.6k★)
-
-**IPC run-ends 재인코딩에서 `BufferBuilder` 대신 `Vec` 사용** — [머지된 PR #11005](https://github.com/apache/arrow-rs/pull/11005)
-
-- `arrow-ipc`의 `into_zero_offset_run_array`는 IPC로 쓰기 전에 슬라이스된 run-end 배열을 재인코딩하는데, 기존에는 새 offsets를 `BufferBuilder::<R::Native>`로 만들었습니다. 이를 `Vec::<R::Native>`로 교체했습니다 (유지보수자들이 [#10245](https://github.com/apache/arrow-rs/issues/10245)에서 "Rust의 고도로 최적화된 `Vec`이 빌더 추상화보다 우세하다"고 관찰한 바로 그 전환 작업).
-- 에픽 목록의 다른 후보들은 이미 변환돼 있었고, main 기준으로 실제로 `BufferBuilder`가 남은 곳이 이 한 곳이었습니다. 이미 변환된 곳을 다시 고치는 대신 진짜 남은 경로를 찾아서 작업했습니다.
-- run-array 라운드트립 테스트가 모든 슬라이스 길이와 양쪽 slice offset에 대해 재인코딩 경로를 검증하므로, `arrow-ipc` 전체 테스트로 확인했습니다. 메인테이너 2명의 승인 후 머지됐습니다. (후속 interval 파싱 PR [PR #11006](https://github.com/apache/arrow-rs/pull/11006)은 리뷰 중입니다.)
+</details>
 
 ---
 ### 대외 활동 및 리더십 (Activities & Leadership)
