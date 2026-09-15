@@ -44,6 +44,19 @@ An AI pipeline DSL in Rust that unifies Polars preprocessing, Burn deep-learning
   <img src="assets/ide_monitor.png" alt="Xazz IDE Monitor" width="600"/>
 </p>
 
+### [Xz](https://github.com/x1zzdev/Xz) — A Language for AI-Written Code
+
+An experimental general-purpose language built around a single thesis: **AI-written, Human-reviewed.** Xz is designed so humans can read, verify, and trust machine-generated code — every behavior explicit, every contract visible, every failure path typed.
+
+- **Tech**: Rust (inkwell / portable LLVM 17), nom / pest, generated Python `ctypes` bindings
+- **Implementation highlights**:
+  - **Intent verification** — the differentiator: `@intent` / `@requires` / `@ensures` / `@effects` claims in doc comments are structurally paired with `pre` / `post` contracts and checked against the body, with a `@trusted` human-review escape hatch ("no unverified claims")
+  - Full front end written from scratch: lexer → indentation parser → name resolution → type inference → contract checking → intent verification
+  - LLVM backend: JIT execution (`xz run`), native binaries (`xz build-native`), and shared libraries (`xz build --shared` → `libXz.so` + `libXz.h`)
+  - FFI-first interop: C ABI bridge, `@cstruct` records, `Ptr` handles, and generated Python `ctypes` wrappers (`xz bind --lang python`)
+  - Structured JSON diagnostics with stable error codes, spans, and confidence-scored fixes, built for an LLM self-correction loop
+  - Status: Phases 1–4 implemented, Phase 5 (FFI) underway; `hello.xz` and `contracts.xz` execute
+
 ### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — Data Pipeline Language
 A Rust DSL for making data analysis approachable, compiling `.xzz` scripts into optimized Polars LazyFrame execution plans.
 

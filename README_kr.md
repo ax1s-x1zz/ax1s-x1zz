@@ -44,6 +44,19 @@ Polars 전처리, Burn 딥러닝 컴파일, 정적 보안 가드레일을 단일
   <img src="assets/ide_monitor.png" alt="Xazz IDE 모니터" width="600"/>
 </p>
 
+### [Xz](https://github.com/x1zzdev/Xz) — AI가 쓴 코드를 위한 언어
+
+**AI-written, Human-reviewed**라는 하나의 명제를 중심으로 설계한 실험적 범용 프로그래밍 언어입니다. 기계가 생성한 코드를 사람이 읽고, 검증하고, 신뢰할 수 있도록 — 모든 동작을 명시적이고, 모든 계약을 가시적이며, 모든 실패 경로를 타입으로 만듭니다.
+
+- **기술 스택**: Rust (inkwell / 이식형 LLVM 17), nom / pest, 생성된 Python `ctypes` 바인딩
+- **주요 구현 특징**:
+  - **인텐트 검증** — 핵심 차별점: 문서 주석의 `@intent` / `@requires` / `@ensures` / `@effects` 주장(claim)을 `pre` / `post` 계약과 순서대로 구조적으로 짝지어 본문과 대조 검증하고, `@trusted` 사람 검토 escape hatch를 제공 ("no unverified claims")
+  - 처음부터 직접 구현한 전체 프런트엔드: lexer → 들여쓰기 파서 → 이름 해석 → 타입 추론 → 계약 검사 → 인텐트 검증
+  - LLVM 백엔드: JIT 실행(`xz run`), 네이티브 바이너리(`xz build-native`), 공유 라이브러리(`xz build --shared` → `libXz.so` + `libXz.h`)
+  - FFI 우선 상호운용: C ABI 브리지, `@cstruct` 레코드, `Ptr` 핸들, 생성된 Python `ctypes` 래퍼(`xz bind --lang python`)
+  - 안정적인 에러 코드·스팬·신뢰도 점수 기반 수정안을 담은 구조적 JSON 진단 — LLM 자기수정 루프를 목표로 설계
+  - 현재 상태: Phase 1–4 구현 완료, Phase 5(FFI) 진행 중, `hello.xz`·`contracts.xz` 실행 가능
+
 ### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — 데이터 파이프라인 언어
 데이터 분석을 쉽게 접근하도록 만드는 Rust DSL로, `.xzz` 스크립트를 최적화된 Polars LazyFrame 실행 계획으로 컴파일합니다.
 
