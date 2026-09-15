@@ -95,7 +95,7 @@ Research quantifying how much energy LLM weight quantization actually saves — 
 ---
 ### Open Source Contributions
 
-Upstream contributions to **[tracel-ai/burn](https://github.com/tracel-ai/burn)** and **[apache/arrow-rs](https://github.com/apache/arrow-rs)** — 5 merged PRs; one reworked across review cycles into a shared-layer fix.
+Upstream contributions to **[tracel-ai/burn](https://github.com/tracel-ai/burn)** and **[apache/arrow-rs](https://github.com/apache/arrow-rs)** — 6 merged PRs; one reworked across review cycles into a shared-layer fix.
 
 **Implement `Min` / `Max` `scatter` / `select_assign` across every backend** — [merged PR #5582](https://github.com/tracel-ai/burn/pull/5582)
 
@@ -106,11 +106,12 @@ Upstream contributions to **[tracel-ai/burn](https://github.com/tracel-ai/burn)*
 - Verified with 1839 tensor + 572 autodiff tests (`--features ndarray`) and clippy-clean on `burn-ndarray`, `burn-flex`, `burn-autodiff`, and `burn-cubecl`; confirmed the new autodiff tests fail against the old `unimplemented!` when the backward is removed.
 
 <details>
-<summary><b>Other merged contributions (4)</b></summary>
+<summary><b>Other merged contributions (5)</b></summary>
 
 - **[burn #5555](https://github.com/tracel-ai/burn/pull/5555)** — Batch-dimension broadcast validation in `TensorCheck::matmul`, so every backend raises a consistent `Tensor Operation Error` before dispatch. (Reworked from #5542 onto the shared `TensorCheck` layer per maintainer direction.)
 - **[burn #5564](https://github.com/tracel-ai/burn/pull/5564)** — Applied `TensorCheck` (`binary_ops_ew`) to `remainder`, `powi`, `powf`, `hypot`, and `atan2`, each with a regression test.
 - **[burn #5580](https://github.com/tracel-ai/burn/pull/5580)** — Rank validation in `TensorCheck::matmul`; ranks < 2 now return a clear error instead of backend-specific panics or inconsistent results.
+- **[burn #5639](https://github.com/tracel-ai/burn/pull/5639)** — Fixed a no-std build break in `burn-std`: the `#[cfg(test)]` module in `layout.rs` used `vec![...]` without importing the `vec!` macro, so `cargo test --no-default-features -p burn-std` failed to compile. Added `use alloc::vec;`.
 - **[arrow-rs #11005](https://github.com/apache/arrow-rs/pull/11005)** — Replaced `BufferBuilder` with `Vec` when re-encoding IPC run-ends (epic [#10245](https://github.com/apache/arrow-rs/issues/10245)); merged with two maintainer approvals. Follow-up interval-parsing PR [#11006](https://github.com/apache/arrow-rs/pull/11006) is under review.
 
 </details>

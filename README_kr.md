@@ -95,7 +95,7 @@ LLM 가중치 양자화가 실제로 얼마나 에너지를 절감하는지, 그
 ---
 ### 오픈소스 기여 (Open Source Contributions)
 
-**[tracel-ai/burn](https://github.com/tracel-ai/burn)**과 **[apache/arrow-rs](https://github.com/apache/arrow-rs)**에 업스트림 기여 — 머지된 PR 5개. 그중 하나는 리뷰 과정에서 공통 레이어 수정으로 재작업.
+**[tracel-ai/burn](https://github.com/tracel-ai/burn)**과 **[apache/arrow-rs](https://github.com/apache/arrow-rs)**에 업스트림 기여 — 머지된 PR 6개. 그중 하나는 리뷰 과정에서 공통 레이어 수정으로 재작업.
 
 **모든 백엔드에 `Min` / `Max` `scatter` / `select_assign` 구현** — [머지된 PR #5582](https://github.com/tracel-ai/burn/pull/5582)
 
@@ -106,11 +106,12 @@ LLM 가중치 양자화가 실제로 얼마나 에너지를 절감하는지, 그
 - `--features ndarray`로 텐서 1839개 + autodiff 572개 테스트 통과, `burn-ndarray`·`burn-flex`·`burn-autodiff`·`burn-cubecl` clippy 클린. backward를 제거하면 새 autodiff 테스트가 기존 `unimplemented!`로 실패함도 확인했습니다.
 
 <details>
-<summary><b>그 외 머지된 기여 (4)</b></summary>
+<summary><b>그 외 머지된 기여 (5)</b></summary>
 
 - **[burn #5555](https://github.com/tracel-ai/burn/pull/5555)** — `TensorCheck::matmul`에 배치 차원 브로드캐스트 검증을 추가해, 디스패치 이전에 모든 백엔드가 일관된 `Tensor Operation Error`를 받도록. (메인테이너 방향에 따라 #5542를 공통 `TensorCheck` 레이어로 재작업.)
 - **[burn #5564](https://github.com/tracel-ai/burn/pull/5564)** — `remainder`, `powi`, `powf`, `hypot`, `atan2`에 `TensorCheck`(`binary_ops_ew`) 적용, 각각 회귀 테스트 추가.
 - **[burn #5580](https://github.com/tracel-ai/burn/pull/5580)** — `TensorCheck::matmul`에 rank 검증 추가; rank < 2가 백엔드별 panic이나 불일치 결과 대신 명확한 에러를 반환.
+- **[burn #5639](https://github.com/tracel-ai/burn/pull/5639)** — `burn-std`의 no-std 빌드 실패 수정: `layout.rs`의 `#[cfg(test)]` 모듈이 `vec!` 매크로를 임포트하지 않고 `vec![...]`를 써서 `cargo test --no-default-features -p burn-std`가 컴파일되지 않던 문제. `use alloc::vec;` 추가.
 - **[arrow-rs #11005](https://github.com/apache/arrow-rs/pull/11005)** — IPC run-ends 재인코딩에서 `BufferBuilder`를 `Vec`으로 교체(에픽 [#10245](https://github.com/apache/arrow-rs/issues/10245)); 메인테이너 2명 승인 후 머지. 후속 interval 파싱 PR [#11006](https://github.com/apache/arrow-rs/pull/11006)은 리뷰 중.
 
 </details>
