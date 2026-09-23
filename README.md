@@ -6,39 +6,28 @@
 
 ---
 
-## Overview
+## What I build
 
-I write compilers and the languages they compile. My main line of work is a family of domain-specific languages that turn `.xzz` scripts into optimized Polars execution plans, built from scratch in Rust — lexer to codegen. Around that core sit a visual editor, a Python→`.xzz` transpiler, and applied research on LLM efficiency.
+I write compilers and the languages they compile. My main line of work is a family of DSLs that turn scripts into optimized Polars execution plans, built from scratch in Rust — lexer to codegen. Around that core sit web-framework bridges, a visual editor, a Python transpiler, and applied research on LLM efficiency.
 
-The design direction stays the same across all of them: move errors from runtime to compile time, keep the CLI small by pushing heavy dependencies behind a subprocess boundary, and make the whole path from CSV to trained model expressible in a single script.
+The design direction is constant across all of them: **move errors from runtime to compile time**, keep the CLI small by pushing heavy dependencies behind a subprocess boundary, and make the whole path from CSV to trained model expressible in a single script.
 
----
-
-## Ecosystem
-
-```
-[Python Code] --> (py2xzz) ---\
-                               --> [.xzz Script] --> (Xazz Compiler) --> [Exec / Burn ML]
-[Visual Drag&Drop] (IDE) ----/
-```
-
-x1zzLang is the foundation that grew into Xazz; py2xzz and the Visual IDE feed `.xzz` scripts into the Xazz compiler.
+**Currently building:** [Xz](https://github.com/x1zzdev/Xz) — a language for AI-written, human-reviewed code — and bridges that bring it to Next.js and Rails.
 
 ---
 
-## Pinned Projects
+## Featured Projects
 
 ### [Xazz](https://github.com/x1zzdev/Xazz) — AI Pipeline DSL
 
 An AI pipeline DSL in Rust that unifies Polars preprocessing, Burn deep-learning compilation, and static security guardrails in one `.xzz` script.
 
 - **Tech**: Rust (edition 2024), Polars, Burn, Axum / Tokio
-- **Implementation highlights**:
-  - Full compiler toolchain built from scratch: lexer → parser → static type checker → Rust/Polars/Burn codegen
-  - Compile-time null and type safety via an `Option<T>` type system, with `line:col` diagnostics and did-you-mean suggestions
-  - Zero-copy path: Apache Arrow buffers handed directly to Burn, avoiding the pandas→NumPy→PyTorch copy boundaries
-  - Policy-as-Code guardrails (PII/secret detection), differential privacy with a per-session epsilon budget, and a SHA-256 append-only audit log
-  - Multi-crate Cargo workspace that keeps the CLI binary 2–5 MB by isolating heavy engines behind the `xazz-runner` subprocess boundary
+- Full compiler toolchain from scratch: lexer → parser → static type checker → Rust/Polars/Burn codegen.
+- Compile-time null/type safety via `Option<T>`, with `line:col` diagnostics and did-you-mean suggestions.
+- Zero-copy: Apache Arrow buffers handed directly to Burn, skipping the pandas→NumPy→PyTorch copy boundaries.
+- Guardrails: Policy-as-Code PII/secret detection, differential privacy with a per-session epsilon budget, SHA-256 append-only audit log.
+- Multi-crate workspace keeps the CLI 2–5 MB by isolating heavy engines behind the `xazz-runner` subprocess boundary.
 
 <p align="center">
   <img src="assets/ide_monitor.png" alt="Xazz IDE Monitor" width="600"/>
@@ -46,143 +35,88 @@ An AI pipeline DSL in Rust that unifies Polars preprocessing, Burn deep-learning
 
 ### [Xz](https://github.com/x1zzdev/Xz) — A Language for AI-Written Code
 
-An experimental general-purpose language built around a single thesis: **AI-written, Human-reviewed.** Xz is designed so humans can read, verify, and trust machine-generated code — every behavior explicit, every contract visible, every failure path typed.
+An experimental general-purpose language built on one thesis: **AI-written, Human-reviewed** — every behavior explicit, every contract visible, every failure path typed.
 
 - **Tech**: Rust (inkwell / portable LLVM 17), nom / pest, generated Python `ctypes` bindings
-- **Implementation highlights**:
-  - **Intent verification** — the differentiator: `@intent` / `@requires` / `@ensures` / `@effects` claims in doc comments are structurally paired with `pre` / `post` contracts and checked against the body, with a `@trusted` human-review escape hatch ("no unverified claims")
-  - Full front end written from scratch: lexer → indentation parser → name resolution → type inference → contract checking → intent verification
-  - LLVM backend: JIT execution (`xz run`), native binaries (`xz build-native`), and shared libraries (`xz build --shared` → `libXz.so` + `libXz.h`)
-  - FFI-first interop: C ABI bridge, `@cstruct` records, `Ptr` handles, and generated Python `ctypes` wrappers (`xz bind --lang python`)
-  - Structured JSON diagnostics with stable error codes, spans, and confidence-scored fixes, built for an LLM self-correction loop
-  - Status: Phases 1–4 implemented, Phase 5 (FFI) underway; `hello.xz` and `contracts.xz` execute
+- **Intent verification** (the differentiator): `@intent` / `@requires` / `@ensures` / `@effects` claims are structurally paired with `pre` / `post` contracts and checked against the body, with a `@trusted` human-review escape hatch.
+- Full front end from scratch, plus an LLVM backend: JIT (`xz run`), native binaries, and C-ABI shared libraries (`libXz.so` + `libXz.h`).
+- Structured JSON diagnostics with stable error codes, spans, and confidence-scored fixes — built for an LLM self-correction loop.
+- Status: Phases 1–4 implemented, Phase 5 (FFI) underway; `hello.xz` and `contracts.xz` execute.
 
-### [next.xz](https://github.com/x1zzdev/next-xz) — Next.js × Xz Hybrid Toolkit
+---
 
-A hybrid web framework that bridges **Next.js (TypeScript)** with the **Xz language** — started solo. Next.js owns the UI and routing shell; Xz owns the backend business logic. Because Xz makes every behavior explicit, an AI agent can generate backend code against typed contracts, self-correct against `xz check-json`, and hand a human a one-glance audit instead of a multi-file TS diff.
+## The Xz Ecosystem
 
-- **Tech**: TypeScript / Bun (`bun:ffi`) / Node (`koffi`), Next.js App Router, Xz (LLVM 17, C ABI)
-- **Implementation highlights**:
-  - Three-package monorepo: `@xz-lang/bridge`, `@xz-lang/agent`, `@xz-lang/audit`
-  - `@xz-lang/bridge` — `.xzint` parser, Xz↔TS type mapping, Bun FFI and Node koffi loaders, `Str` / `Bytes` / `@cstruct` marshalling, `Result` → typed error mapping, and a TypeScript binding generator
-  - `@xz-lang/agent` — `xz check-json` runner with a diagnostic parser, prompt builder, and an N=3 self-correction loop with KPI instrumentation (first-pass / self-correction / escalation)
-  - `@xz-lang/audit` — a Next.js dev overlay at `/___audit` that renders an Audit Card and effect badges for human approval
-  - Ownership modeled in the binding layer: borrowed vs `transfer` buffer lifetimes, so zero-copy handoff stays explicit from `.xzint` to the Server Action
+```
+[Python Code] --> (py2xzz) ---\
+                               --> [.xzz Script] --> (Xazz Compiler) --> [Exec / Burn ML]
+[Visual Drag&Drop] (IDE) ----/
+```
 
-### [rails.xz](https://github.com/imrubydev/rails-xz) — Rails × Xz Hybrid Toolkit
-
-A hybrid Rails toolkit that bridges **Ruby on Rails** with the **Xz language** — built jointly with [**imrubydev**](https://github.com/imrubydev). Rails owns the web layer (ActiveRecord, routing, controllers, Hotwire); Xz owns the backend logic that must be fast, isolated, and verifiable.
-
-- **Tech**: Ruby / Rails (Engine, Hotwire, ViewComponent, Turbo), Ruby FFI (Fiddle), Xz (LLVM 17, C ABI)
-- **Scope split** (two-developer collaboration):
-  - **ax1s-x1zz** — `rails-xz-bridge` (FFI bridge + binding generation + compiler integration) and `rails-xz-agent` (the self-correction loop)
-  - **imrubydev** — `rails-xz` Engine (`Xz::Module` service DSL, `/xz_audit` dashboard) and developer experience; repo owner
-- **Implementation highlights**:
-  - The bridge generates Ruby bindings from `.xzint` interfaces and loads Xz shared libraries through `Fiddle`/`ffi`; `@export` `.xz` modules compile to a C ABI library, so there is no hand-written C extension to maintain
-  - Generated logic is quarantined in `*.xz` files — a mismatch between declared and derived effects is a compile error (`I0020`), and the agent never touches Rails' implicit context
-  - The Engine owns the human-review path: ViewComponent audit cards, effect badges, and Turbo Stream approvals over the `AuditCard` model
-
-### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — Data Pipeline Language
-A Rust DSL for making data analysis approachable, compiling `.xzz` scripts into optimized Polars LazyFrame execution plans.
-
-- **Tech stack**: Rust, Polars, clap, serde
-- **Implementation highlights**:
-  - Full compiler pipeline (lexer/parser/codegen/emitter) in Rust
-  - Null-safe `Option<T>` type system with a `fillNull` operator
-  - `x1zz import` auto-infers CSV schemas (including EUC-KR/CP949 decoding) and generates type declarations
-  - `x1zz emit rust` transpiles `.xzz` into standalone Polars LazyFrame Rust source
-  - Dependency isolation: the CLI never links Polars — execution is delegated to a spawned subprocess
-  - The foundation that later grew into Xazz
-
-### [py2xzz](https://github.com/x1zzdev/py2xzz) — Python → `.xzz` Transpiler
-A Rust CLI that converts Python data and deep-learning pipelines (Pandas / PyTorch) into `.xzz` DSL scripts.
-
-- **Tech stack**: Rust, serde
-- **Implementation highlights**:
-  - Self-contained Python 3 lexer/parser producing an AST mirroring the Python `ast` module spec
-  - A mapper that turns Pandas chains into `PipelineOp` chains and `nn.Module` classes into `ModelDecl`/`LayerKind`
-  - Column types inferred from CSV headers and sample values, wrapped in `Option<...>` when nulls are present
-  - A span map traces original Python line/column positions to emitted statements for diagnostic reporting
-  - Output maps 1:1 to the `xazz-core` AST and passes `xazz check`
-
-### [x1zzLang Visual IDE](https://github.com/x1zzdev/x1zzLang-visual-ide)
-A graphical pipeline editor for x1zzLang — design a DAG workflow visually and run it natively.
-
-- **Tech stack**: React 18, Vite, @xyflow/react, i18next
-- **Implementation highlights**:
-  - Drag-and-drop DAG builder with 9 built-in pipeline operators
-  - Real-time transpilation from the visual graph to `.xzz` source via a dedicated transpiler engine
-  - One-click execution against the backend with tabular results
-  - Multi-workflow tabs, undo/redo, auto-save, container grouping, and Korean/English UI
-
-### [LLM PCAG Research](https://github.com/ax1s-x1zz/llm-pcag-research) — The Power Wall of LLM Quantization
-Research quantifying how much energy LLM weight quantization actually saves — and the macro-grid Jevons paradox it creates.
-
-- **Tech stack**: Python (NumPy, pandas, SciPy, SymPy, Matplotlib)
-- **Implementation highlights**:
-  - Defines the PCAG metric (Power Cost per Accuracy Gain) to measure when quantization efficiency collapses faster than accuracy loss
-  - Identifies the INT4→INT3 "Power Wall" via three independent paths: empirical PCHIP, Monte Carlo, and an analytic model
-  - Proves the inflection root is structurally independent of amplitude
-  - Formalizes the Jevons Paradox in closed form with a symbolic proof in SymPy (grid load increases iff demand elasticity E_d > 1)
-  - Reproducible experiment pipeline with strict data-source labeling (reference-literature vs GPU-measured)
+| Project | What it is | Tech |
+|---|---|---|
+| [next.xz](https://github.com/x1zzdev/next-xz) | Next.js × Xz bridge — Bun/Node FFI, agent self-correction loop, `/___audit` overlay. *Solo project.* | TypeScript · Bun · Next.js |
+| [rails.xz](https://github.com/imrubydev/rails-xz) | Rails × Xz bridge — Ruby FFI, Rails Engine audit dashboard. *With [imrubydev](https://github.com/imrubydev): ax1s owns the bridge/agent, imrubydev owns the Engine & DX.* | Ruby · Rails |
+| [x1zzLang](https://github.com/x1zzdev/x1zzLang) | The data-pipeline DSL that grew into Xazz. | Rust · Polars |
+| [py2xzz](https://github.com/x1zzdev/py2xzz) | Python (Pandas / PyTorch) → `.xzz` transpiler. | Rust |
+| [x1zzLang Visual IDE](https://github.com/x1zzdev/x1zzLang-visual-ide) | Drag-and-drop DAG editor that emits and runs `.xzz`. | React |
+| [LLM PCAG Research](https://github.com/ax1s-x1zz/llm-pcag-research) | Energy cost of LLM weight quantization and the macro-grid Jevons paradox it creates. | Python |
 
 <p align="center">
   <img src="assets/fig15_dashboard.png" alt="LLM PCAG Dashboard" width="600"/>
 </p>
 
 ---
-### Open Source Contributions
+
+## Open Source Contributions
 
 Upstream contributions to **[tracel-ai/burn](https://github.com/tracel-ai/burn)** and **[apache/arrow-rs](https://github.com/apache/arrow-rs)** — 6 merged PRs; one reworked across review cycles into a shared-layer fix.
 
-**Implement `Min` / `Max` `scatter` / `select_assign` across every backend** — [merged PR #5582](https://github.com/tracel-ai/burn/pull/5582)
-
-- Closed the last gap in the element-wise `scatter` / `select_assign` API left open by [#5522](https://github.com/tracel-ai/burn/issues/5522): `Assign`, `Add`, and `Mul` were supported, but `Min` / `Max` hit `unimplemented!` on every backend — even though `scatter_nd` already implemented all five variants. Delivered the missing variants end-to-end.
-- **All four backends**: ndarray primitives, `flex` helpers that share the existing update walkers, `cubecl` entries reusing the `BinaryMinOp` / `BinaryMaxOp` kernels, and `tch` via `scatter_reduce` / `index_reduce_` (`"amin"` / `"amax"`).
-- **Autodiff**: backward passes for `Min` / `Max` `scatter` and `select_assign`, mirroring the `scatter_nd` Min/Max gradient — winner masks from comparisons, ties credited to both operands, unique indices required.
-- Dispatch matches now enumerate every `IndexingUpdateOp` variant, so an unsupported combination fails at compile time instead of panicking at runtime.
-- Verified with 1839 tensor + 572 autodiff tests (`--features ndarray`) and clippy-clean on `burn-ndarray`, `burn-flex`, `burn-autodiff`, and `burn-cubecl`; confirmed the new autodiff tests fail against the old `unimplemented!` when the backward is removed.
+**Implement `Min` / `Max` `scatter` / `select_assign` across every backend** — [merged PR #5582](https://github.com/tracel-ai/burn/pull/5582). Closed the last gap left by [#5522](https://github.com/tracel-ai/burn/issues/5522): `Assign` / `Add` / `Mul` were supported, but `Min` / `Max` hit `unimplemented!` on every backend. Delivered end-to-end across ndarray, flex, cubecl, and tch, including autodiff backward passes.
 
 <details>
-<summary><b>Other merged contributions (5)</b></summary>
+<summary><b>Details on #5582 and the other 5 merged PRs</b></summary>
 
-- **[burn #5555](https://github.com/tracel-ai/burn/pull/5555)** — Batch-dimension broadcast validation in `TensorCheck::matmul`, so every backend raises a consistent `Tensor Operation Error` before dispatch. (Reworked from #5542 onto the shared `TensorCheck` layer per maintainer direction.)
-- **[burn #5564](https://github.com/tracel-ai/burn/pull/5564)** — Applied `TensorCheck` (`binary_ops_ew`) to `remainder`, `powi`, `powf`, `hypot`, and `atan2`, each with a regression test.
-- **[burn #5580](https://github.com/tracel-ai/burn/pull/5580)** — Rank validation in `TensorCheck::matmul`; ranks < 2 now return a clear error instead of backend-specific panics or inconsistent results.
-- **[burn #5639](https://github.com/tracel-ai/burn/pull/5639)** — Fixed a no-std build break in `burn-std`: the `#[cfg(test)]` module in `layout.rs` used `vec![...]` without importing the `vec!` macro, so `cargo test --no-default-features -p burn-std` failed to compile. Added `use alloc::vec;`.
-- **[arrow-rs #11005](https://github.com/apache/arrow-rs/pull/11005)** — Replaced `BufferBuilder` with `Vec` when re-encoding IPC run-ends (epic [#10245](https://github.com/apache/arrow-rs/issues/10245)); merged with two maintainer approvals. Follow-up interval-parsing PR [#11006](https://github.com/apache/arrow-rs/pull/11006) is under review.
+- **All four backends**: ndarray primitives, `flex` helpers sharing the existing update walkers, `cubecl` entries reusing the `BinaryMinOp` / `BinaryMaxOp` kernels, and `tch` via `scatter_reduce` / `index_reduce_` (`"amin"` / `"amax"`).
+- **Autodiff**: backward passes for `Min` / `Max` `scatter` and `select_assign`, mirroring the `scatter_nd` Min/Max gradient — winner masks from comparisons, ties credited to both operands, unique indices required.
+- Dispatch matches now enumerate every `IndexingUpdateOp` variant, so an unsupported combination fails at compile time instead of panicking at runtime.
+- Verified with 1839 tensor + 572 autodiff tests (`--features ndarray`) and clippy-clean on `burn-ndarray`, `burn-flex`, `burn-autodiff`, and `burn-cubecl`.
+- **[burn #5555](https://github.com/tracel-ai/burn/pull/5555)** — Batch-dimension broadcast validation in `TensorCheck::matmul` (reworked from #5542 onto the shared `TensorCheck` layer).
+- **[burn #5564](https://github.com/tracel-ai/burn/pull/5564)** — Applied `TensorCheck` (`binary_ops_ew`) to `remainder`, `powi`, `powf`, `hypot`, and `atan2`, with regression tests.
+- **[burn #5580](https://github.com/tracel-ai/burn/pull/5580)** — Rank validation in `TensorCheck::matmul`; ranks < 2 return a clear error instead of backend panics.
+- **[burn #5639](https://github.com/tracel-ai/burn/pull/5639)** — Fixed a no-std build break in `burn-std` (missing `use alloc::vec;`).
+- **[arrow-rs #11005](https://github.com/apache/arrow-rs/pull/11005)** — Replaced `BufferBuilder` with `Vec` when re-encoding IPC run-ends; merged with two maintainer approvals. Follow-up [#11006](https://github.com/apache/arrow-rs/pull/11006) under review.
 
 </details>
 
 ---
-### Activities & Leadership
 
-#### **Trendsetter — Founder & Lead Architect (2026.03 – Present)**
-> **Role:** Club Founder, Pipeline & Curriculum Architect, Platform Engineer
+## Activities & Leadership
 
-- **Club Design & Onboarding Framework**
-  - Founded `Trendsetter`, a semiconductor and tech-focused data analysis club, designing a step-by-step exploratory roadmap to lower entry barriers for Python and data analysis.
-  - Authored and distributed initial competency diagnosis forms, Markdown writing guides, and hands-on Python (Pandas, Matplotlib, Plotly) guidelines.
+<details>
+<summary><b>Trendsetter — Founder & Lead Architect</b> · 2026.03 – Present</summary>
 
-- **Environment & Educational Starter-Kit Engineering**
-  - **CPU vs. GPU Specs Analysis**: Engineered open-source GitHub repositories ([ax1s-x1zz/trendsetter-semiconductor-01-cpu-vs-gpu](https://github.com/ax1s-x1zz/trendsetter-semiconductor-01-cpu-vs-gpu)) containing Google Colab notebooks, curated hardware datasets, and Google Forms for assignment submission.
-  - **Moore's Law & Huang's Law Verification**: Engineered Colab environments enabling mathematical and statistical verification of semiconductor transistor density via log-scale ($\log$) transformation and linear regression analysis.
-  - **Industry Data Analysis**: Released data preprocessing templates based on official semiconductor export data from MOTIE and KOSIS.
+Founded `Trendsetter`, a semiconductor and tech-focused data-analysis club. Designed the onboarding roadmap, competency diagnostics, Markdown/Python guides, and open-source Colab starter-kits ([CPU vs. GPU](https://github.com/ax1s-x1zz/trendsetter-semiconductor-01-cpu-vs-gpu), Moore's/Huang's Law log-scale regression, MOTIE/KOSIS export-data templates).
 
-#### **CodeGate AI Startup Hackathon (`Xazz / x1zz Guard`) (2026.07)**
-> **Role:** Team Leader, Project Manager, Core Toolchain Architect
-- **Team & IP Governance:** Set a clear 1/N reward split and separated pre-existing core IP (`x1zzLang`) from new hackathon assets.
-- **Crisis Recovery:** When a teammate left mid-project, restructured roles quickly to still meet the submission deadline.
-- **Defensive Engineering:** Prepared concrete answers to likely judge edge-cases (query correlation overhead, DP noise model loss).
-- **Architecture:** Designed `x1zz Guard` — an AST-based static policy gate powered by an on-premise sLM (Qwen2.5-Coder) in Rust.
+</details>
 
-#### **GEEKs Hackathon (2026.08.04 - 2026.08.05)**
-> **Role:** Team Planner & Presenter, Strategic Pivot Lead, Product/UX Validator
-- **Strategic Pivot:** With a tight deadline and mixed team skills, pivoted from an unfeasible B2B PaaS to a user-centric B2C platform (`Woosen-haejo`).
-- **Logic & UX Design:** Co-designed the admin scoring logic with Claude Opus 5 Vision AI and PostGIS open data.
-- **Pitch Execution:** Owned pitch prep end-to-end and delivered the final 8-minute presentation.
+<details>
+<summary><b>CodeGate AI Startup Hackathon (Xazz / x1zz Guard)</b> · 2026.07 — Team Lead</summary>
+
+Team & IP governance (1/N reward split, pre-existing IP separated from hackathon assets), mid-project crisis recovery, judge edge-case prep, and the architecture of `x1zz Guard` — an AST-based static policy gate on an on-premise sLM (Qwen2.5-Coder) in Rust.
+
+</details>
+
+<details>
+<summary><b>GEEKs Hackathon</b> · 2026.08 — Team Planner & Presenter</summary>
+
+Led the strategic pivot from an unfeasible B2B PaaS to a B2C platform (`Woosen-haejo`), co-designed the admin scoring logic with Vision AI + PostGIS open data, and delivered the final 8-minute pitch.
+
+</details>
+
 ---
-## Tech Stack Summary
+
+## Tech Stack
 
 | Area | Technologies |
 |---|---|
