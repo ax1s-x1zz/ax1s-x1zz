@@ -57,6 +57,31 @@ Polars 전처리, Burn 딥러닝 컴파일, 정적 보안 가드레일을 단일
   - 안정적인 에러 코드·스팬·신뢰도 점수 기반 수정안을 담은 구조적 JSON 진단 — LLM 자기수정 루프를 목표로 설계
   - 현재 상태: Phase 1–4 구현 완료, Phase 5(FFI) 진행 중, `hello.xz`·`contracts.xz` 실행 가능
 
+### [next.xz](https://github.com/x1zzdev/next-xz) — Next.js × Xz 하이브리드 툴킷
+
+**Next.js(TypeScript)** 와 **Xz 언어**를 연결하는 하이브리드 웹 프레임워크 겸 오케스트레이션 툴킷입니다 — 단독으로 시작한 프로젝트입니다. UI와 라우팅 셸은 Next.js가, 백엔드 비즈니스 로직은 Xz가 담당합니다. Xz가 모든 동작을 명시적으로 만들기 때문에, AI Agent가 타입 계약에 맞춰 백엔드 코드를 생성하고 `xz check-json`으로 스스로 교정하며, 여러 파일의 TS diff 대신 한눈에 검토 가능한 감사 결과를 사람에게 넘깁니다.
+
+- **기술 스택**: TypeScript / Bun (`bun:ffi`) / Node (`koffi`), Next.js App Router, Xz (LLVM 17, C ABI)
+- **주요 구현 특징**:
+  - `@xz-lang/bridge`, `@xz-lang/agent`, `@xz-lang/audit` 세 패키지 모노레포
+  - `@xz-lang/bridge` — `.xzint` 파서, Xz↔TS 타입 매핑, Bun FFI·Node koffi 로더, `Str` / `Bytes` / `@cstruct` 마샬링, `Result` → 타입드 에러 매핑, TypeScript 바인딩 제너레이터
+  - `@xz-lang/agent` — 진단 파서를 갖춘 `xz check-json` 실행기, 프롬프트 빌더, KPI 계측(first-pass / self-correction / escalation)을 포함한 N=3 자가수정 루프
+  - `@xz-lang/audit` — `/___audit` 라우트에서 Audit Card와 이펙트 배지를 렌더링해 사람이 승인하는 Next.js 개발 오버레이
+  - 바인딩 레이어에 소유권을 모델링: borrow와 `transfer` 버퍼 수명을 구분해 `.xzint`부터 Server Action까지 zero-copy 전달을 명시적으로 유지
+
+### [rails.xz](https://github.com/imrubydev/rails-xz) — Rails × Xz 하이브리드 툴킷
+
+**Ruby on Rails** 와 **Xz 언어**를 연결하는 하이브리드 Rails 툴킷입니다 — Rails를 다루는 [**imrubydev**](https://github.com/imrubydev)와 함께 개발합니다. 웹 레이어(ActiveRecord, 라우팅, 컨트롤러, Hotwire)는 Rails가, 빠르고 격리되며 검증 가능해야 하는 백엔드 로직은 Xz가 담당합니다.
+
+- **기술 스택**: Ruby / Rails (Engine, Hotwire, ViewComponent, Turbo), Ruby FFI (Fiddle), Xz (LLVM 17, C ABI)
+- **역할 분담** (2인 협업):
+  - **ax1s-x1zz** — `rails-xz-bridge`(FFI 브리지 + 바인딩 생성 + 컴파일러 통합)와 `rails-xz-agent`(자가수정 루프)
+  - **imrubydev** — `rails-xz` Engine(`Xz::Module` 서비스 DSL, `/xz_audit` 대시보드)와 개발자 경험; 저장소 소유자
+- **주요 구현 특징**:
+  - 브리지가 `.xzint` 인터페이스에서 Ruby 바인딩을 생성하고 Xz 공유 라이브러리를 `Fiddle`/`ffi`로 로드합니다. `@export` `.xz` 모듈은 C ABI 라이브러리로 컴파일되므로 유지보수할 C 확장이 없습니다
+  - 생성 로직은 `*.xz` 파일에 완전히 격리됩니다 — 선언된 effects와 파생된 effects가 다르면 컴파일 에러(`I0020`)이며, Agent가 Rails의 암묵적 컨텍스트를 건드리지 않습니다
+  - Engine이 사람 검토 경로를 담당합니다: ViewComponent 감사 카드, 이펙트 배지, `AuditCard` 모델 기반 Turbo Stream 승인/거절
+
 ### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — 데이터 파이프라인 언어
 데이터 분석을 쉽게 접근하도록 만드는 Rust DSL로, `.xzz` 스크립트를 최적화된 Polars LazyFrame 실행 계획으로 컴파일합니다.
 
@@ -165,8 +190,9 @@ LLM 가중치 양자화가 실제로 얼마나 에너지를 절감하는지, 그
 | 시스템 / DSL | Rust (edition 2024), Cargo workspace, clap, serde |
 | 데이터 엔진 | Polars (LazyFrame), Apache Arrow |
 | 딥러닝 | Burn, zero-copy 텐서 전달 |
-| 웹 / API | Axum, Tokio, React 18, Vite, @xyflow/react |
-| 백엔드 통합 | Rust REST API, SHA-256 감사 로깅 |
+| 웹 / API | Axum, Tokio, React 18, Next.js, Vite, @xyflow/react |
+| 웹 프레임워크 | Rails (Hotwire, ViewComponent, Turbo), Ruby FFI |
+| 백엔드 통합 | Rust REST API, SHA-256 감사 로깅, TypeScript/Bun FFI (koffi) |
 | 연구 / 분석 | Python, NumPy, pandas, SciPy, SymPy, Matplotlib |
 
 ---

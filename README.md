@@ -57,6 +57,31 @@ An experimental general-purpose language built around a single thesis: **AI-writ
   - Structured JSON diagnostics with stable error codes, spans, and confidence-scored fixes, built for an LLM self-correction loop
   - Status: Phases 1–4 implemented, Phase 5 (FFI) underway; `hello.xz` and `contracts.xz` execute
 
+### [next.xz](https://github.com/x1zzdev/next-xz) — Next.js × Xz Hybrid Toolkit
+
+A hybrid web framework that bridges **Next.js (TypeScript)** with the **Xz language** — started solo. Next.js owns the UI and routing shell; Xz owns the backend business logic. Because Xz makes every behavior explicit, an AI agent can generate backend code against typed contracts, self-correct against `xz check-json`, and hand a human a one-glance audit instead of a multi-file TS diff.
+
+- **Tech**: TypeScript / Bun (`bun:ffi`) / Node (`koffi`), Next.js App Router, Xz (LLVM 17, C ABI)
+- **Implementation highlights**:
+  - Three-package monorepo: `@xz-lang/bridge`, `@xz-lang/agent`, `@xz-lang/audit`
+  - `@xz-lang/bridge` — `.xzint` parser, Xz↔TS type mapping, Bun FFI and Node koffi loaders, `Str` / `Bytes` / `@cstruct` marshalling, `Result` → typed error mapping, and a TypeScript binding generator
+  - `@xz-lang/agent` — `xz check-json` runner with a diagnostic parser, prompt builder, and an N=3 self-correction loop with KPI instrumentation (first-pass / self-correction / escalation)
+  - `@xz-lang/audit` — a Next.js dev overlay at `/___audit` that renders an Audit Card and effect badges for human approval
+  - Ownership modeled in the binding layer: borrowed vs `transfer` buffer lifetimes, so zero-copy handoff stays explicit from `.xzint` to the Server Action
+
+### [rails.xz](https://github.com/imrubydev/rails-xz) — Rails × Xz Hybrid Toolkit
+
+A hybrid Rails toolkit that bridges **Ruby on Rails** with the **Xz language** — built jointly with [**imrubydev**](https://github.com/imrubydev). Rails owns the web layer (ActiveRecord, routing, controllers, Hotwire); Xz owns the backend logic that must be fast, isolated, and verifiable.
+
+- **Tech**: Ruby / Rails (Engine, Hotwire, ViewComponent, Turbo), Ruby FFI (Fiddle), Xz (LLVM 17, C ABI)
+- **Scope split** (two-developer collaboration):
+  - **ax1s-x1zz** — `rails-xz-bridge` (FFI bridge + binding generation + compiler integration) and `rails-xz-agent` (the self-correction loop)
+  - **imrubydev** — `rails-xz` Engine (`Xz::Module` service DSL, `/xz_audit` dashboard) and developer experience; repo owner
+- **Implementation highlights**:
+  - The bridge generates Ruby bindings from `.xzint` interfaces and loads Xz shared libraries through `Fiddle`/`ffi`; `@export` `.xz` modules compile to a C ABI library, so there is no hand-written C extension to maintain
+  - Generated logic is quarantined in `*.xz` files — a mismatch between declared and derived effects is a compile error (`I0020`), and the agent never touches Rails' implicit context
+  - The Engine owns the human-review path: ViewComponent audit cards, effect badges, and Turbo Stream approvals over the `AuditCard` model
+
 ### [x1zzLang](https://github.com/x1zzdev/x1zzLang) — Data Pipeline Language
 A Rust DSL for making data analysis approachable, compiling `.xzz` scripts into optimized Polars LazyFrame execution plans.
 
@@ -164,8 +189,9 @@ Upstream contributions to **[tracel-ai/burn](https://github.com/tracel-ai/burn)*
 | Systems / DSL | Rust (edition 2024), Cargo workspace, clap, serde |
 | Data engine | Polars (LazyFrame), Apache Arrow |
 | Deep learning | Burn, zero-copy tensor handoff |
-| Web / API | Axum, Tokio, React 18, Vite, @xyflow/react |
-| Backend integration | Rust REST API, SHA-256 audit logging |
+| Web / API | Axum, Tokio, React 18, Next.js, Vite, @xyflow/react |
+| Web frameworks | Rails (Hotwire, ViewComponent, Turbo), Ruby FFI |
+| Backend integration | Rust REST API, SHA-256 audit logging, TypeScript/Bun FFI (koffi) |
 | Research / analysis | Python, NumPy, pandas, SciPy, SymPy, Matplotlib |
 
 ---
