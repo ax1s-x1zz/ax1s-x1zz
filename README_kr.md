@@ -8,11 +8,11 @@
 
 ## 무엇을 만드나
 
-컴파일러와 그 언어를 직접 작성합니다. 주요 작업은 스크립트를 최적화된 Polars 실행 계획으로 바꾸는 일련의 DSL이며, lexer부터 codegen까지 Rust로 처음부터 구축합니다. 그 핵심 주변에는 웹 프레임워크 브리지, 비주얼 에디터, Python 변환기(transpiler), LLM 효율성 응용 연구가 있습니다.
+컴파일러와 그 언어를 직접 작성합니다. 주요 작업은 스크립트를 최적화된 Polars 실행 계획으로 바꾸는 일련의 DSL이며, lexer부터 codegen까지 Rust로 처음부터 구축합니다. 그 핵심 주변에는 비주얼 에디터, Python 트랜스파일러, 웹 프레임워크 브리지, LLM 효율성 응용 연구가 있습니다.
 
 설계 방향은 모든 프로젝트에서 동일합니다: **오류를 런타임이 아닌 컴파일 타임으로 이동**시키고, 무거운 의존성을 서브프로세스 경계 뒤에 격리해 CLI를 가볍게 유지하며, CSV에서 학습 완료 모델까지의 전체 경로를 단일 스크립트로 표현합니다.
 
-**현재 개발 중:** [Xz](https://github.com/x1zzdev/Xz) — AI가 쓴, 사람이 검토하는 코드를 위한 언어 — 와 이를 Next.js·Rails로 가져오는 브리지.
+**메인 프로젝트:** [Xazz](https://github.com/x1zzdev/Xazz) 툴체인 — 하나의 타입드 AST를 공유하는 컴파일러, Python 트랜스파일러, 비주얼 에디터. **병행 중:** [Xz](https://github.com/x1zzdev/Xz) — AI가 쓴, 사람이 검토하는 코드를 위한 언어 — 와 이를 Next.js·Rails로 가져오는 브리지.
 
 ---
 
@@ -45,7 +45,7 @@ Polars 전처리, Burn 딥러닝 컴파일, 정적 보안 가드레일을 단일
 
 ---
 
-## Xz 생태계
+## 생태계
 
 ```
 [Python 코드] --> (py2xzz) ---\
@@ -55,11 +55,11 @@ Polars 전처리, Burn 딥러닝 컴파일, 정적 보안 가드레일을 단일
 
 | 프로젝트 | 설명 | 기술 |
 |---|---|---|
-| [next.xz](https://github.com/x1zzdev/next-xz) | Next.js × Xz 브리지 — Bun/Node FFI, Agent 자가수정 루프, `/___audit` 오버레이. *단독 프로젝트.* | TypeScript · Bun · Next.js |
-| [rails.xz](https://github.com/imrubydev/rails-xz) | Rails × Xz 브리지 — Ruby FFI, Rails Engine 감사 대시보드. *[imrubydev](https://github.com/imrubydev)와 공동: ax1s는 브리지/에이전트, imrubydev는 Engine·DX 담당.* | Ruby · Rails |
 | [x1zzLang](https://github.com/x1zzdev/x1zzLang) | Xazz로 성장한 데이터 파이프라인 DSL. | Rust · Polars |
 | [py2xzz](https://github.com/x1zzdev/py2xzz) | Python (Pandas / PyTorch) → `.xzz` 변환기. | Rust |
 | [x1zzLang Visual IDE](https://github.com/x1zzdev/x1zzLang-visual-ide) | `.xzz`를 생성·실행하는 드래그 앤 드롭 DAG 에디터. | React |
+| [next.xz](https://github.com/x1zzdev/next-xz) | Next.js × Xz 브리지 — Bun/Node FFI, Agent 자가수정 루프, `/___audit` 오버레이. *단독 프로젝트.* | TypeScript · Bun · Next.js |
+| [rails.xz](https://github.com/imrubydev/rails-xz) | Rails × Xz 브리지 — Ruby FFI, Rails Engine 감사 대시보드. *[imrubydev](https://github.com/imrubydev)와 공동: ax1s는 브리지/에이전트, imrubydev는 Engine·DX 담당.* | Ruby · Rails |
 | [LLM PCAG 연구](https://github.com/ax1s-x1zz/llm-pcag-research) | LLM 가중치 양자화의 에너지 비용과 그로 인한 그리드 Jevons 역설. | Python |
 
 <p align="center">

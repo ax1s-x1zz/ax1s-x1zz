@@ -8,11 +8,11 @@
 
 ## What I build
 
-I write compilers and the languages they compile. My main line of work is a family of DSLs that turn scripts into optimized Polars execution plans, built from scratch in Rust — lexer to codegen. Around that core sit web-framework bridges, a visual editor, a Python transpiler, and applied research on LLM efficiency.
+I write compilers and the languages they compile. My main line of work is a family of DSLs that turn scripts into optimized Polars execution plans, built from scratch in Rust — lexer to codegen. Around that core sit a visual editor, a Python transpiler, web-framework bridges, and applied research on LLM efficiency.
 
 The design direction is constant across all of them: **move errors from runtime to compile time**, keep the CLI small by pushing heavy dependencies behind a subprocess boundary, and make the whole path from CSV to trained model expressible in a single script.
 
-**Currently building:** [Xz](https://github.com/x1zzdev/Xz) — a language for AI-written, human-reviewed code — and bridges that bring it to Next.js and Rails.
+**Main line:** the [Xazz](https://github.com/x1zzdev/Xazz) toolchain — a compiler, a Python transpiler, and a visual editor sharing one typed AST. **Also building:** [Xz](https://github.com/x1zzdev/Xz) — a language for AI-written, human-reviewed code — and bridges that bring it to Next.js and Rails.
 
 ---
 
@@ -45,7 +45,7 @@ An experimental general-purpose language built on one thesis: **AI-written, Huma
 
 ---
 
-## The Xz Ecosystem
+## Ecosystem
 
 ```
 [Python Code] --> (py2xzz) ---\
@@ -55,11 +55,11 @@ An experimental general-purpose language built on one thesis: **AI-written, Huma
 
 | Project | What it is | Tech |
 |---|---|---|
-| [next.xz](https://github.com/x1zzdev/next-xz) | Next.js × Xz bridge — Bun/Node FFI, agent self-correction loop, `/___audit` overlay. *Solo project.* | TypeScript · Bun · Next.js |
-| [rails.xz](https://github.com/imrubydev/rails-xz) | Rails × Xz bridge — Ruby FFI, Rails Engine audit dashboard. *With [imrubydev](https://github.com/imrubydev): ax1s owns the bridge/agent, imrubydev owns the Engine & DX.* | Ruby · Rails |
 | [x1zzLang](https://github.com/x1zzdev/x1zzLang) | The data-pipeline DSL that grew into Xazz. | Rust · Polars |
 | [py2xzz](https://github.com/x1zzdev/py2xzz) | Python (Pandas / PyTorch) → `.xzz` transpiler. | Rust |
 | [x1zzLang Visual IDE](https://github.com/x1zzdev/x1zzLang-visual-ide) | Drag-and-drop DAG editor that emits and runs `.xzz`. | React |
+| [next.xz](https://github.com/x1zzdev/next-xz) | Next.js × Xz bridge — Bun/Node FFI, agent self-correction loop, `/___audit` overlay. *Solo project.* | TypeScript · Bun · Next.js |
+| [rails.xz](https://github.com/imrubydev/rails-xz) | Rails × Xz bridge — Ruby FFI, Rails Engine audit dashboard. *With [imrubydev](https://github.com/imrubydev): ax1s owns the bridge/agent, imrubydev owns the Engine & DX.* | Ruby · Rails |
 | [LLM PCAG Research](https://github.com/ax1s-x1zz/llm-pcag-research) | Energy cost of LLM weight quantization and the macro-grid Jevons paradox it creates. | Python |
 
 <p align="center">
